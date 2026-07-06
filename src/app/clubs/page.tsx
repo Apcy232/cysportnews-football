@@ -1,10 +1,81 @@
-import { PageShell } from "@/components/page-shell";
+import { Building2, MapPin, Shield } from "lucide-react";
+import { ClubBadge } from "@/components/club-badge";
+import { demoStandings, demoTeams } from "@/lib/demo-data";
 
 export default function ClubsPage() {
   return (
-    <PageShell
-      title="Clubs"
-      description="Club profiles, badges, venues and squad links will live here."
-    />
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-8">
+        <p className="text-sm font-bold uppercase text-[var(--brand)]">
+          CYsportnews Football
+        </p>
+        <h1 className="text-4xl font-black text-white">Clubs</h1>
+        <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
+          Demo club profiles for the Cyprus First Division MVP, ready to be
+          replaced by live Supabase data.
+        </p>
+      </div>
+
+      <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {demoTeams.map((team) => {
+          const tableRow = demoStandings.find((row) => row.teamId === team.id);
+
+          return (
+            <article className="sports-card animate-lift rounded-lg p-5" key={team.id}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <ClubBadge
+                    name={team.shortName}
+                    color={team.primaryColor}
+                    size="lg"
+                  />
+                  <div>
+                    <h2 className="text-xl font-black text-white">{team.name}</h2>
+                    <p className="mt-1 text-sm text-[var(--muted)]">
+                      Founded {team.founded}
+                    </p>
+                  </div>
+                </div>
+                <Shield className="gold-text" size={22} aria-hidden="true" />
+              </div>
+
+              <dl className="mt-6 grid gap-3 text-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                    <MapPin size={15} aria-hidden="true" />
+                    City
+                  </dt>
+                  <dd className="font-bold text-white">{team.city}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                    <Building2 size={15} aria-hidden="true" />
+                    Venue
+                  </dt>
+                  <dd className="text-right font-bold text-white">{team.venue}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-[var(--muted)]">Points</dt>
+                  <dd className="font-black text-[var(--brand)]">
+                    {tableRow?.points ?? "-"}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="mt-5 flex gap-2">
+                {team.form.map((item, index) => (
+                  <span
+                    className="flex h-7 w-7 items-center justify-center rounded-md bg-[#080b11] text-xs font-black text-white"
+                    key={`${team.id}-${item}-${index}`}
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </article>
+          );
+        })}
+      </section>
+    </div>
   );
 }

@@ -9,63 +9,16 @@ import {
   Trophy
 } from "lucide-react";
 import Link from "next/link";
-
-const featuredMatch = {
-  competition: "Cyprus First Division",
-  round: "Matchday 1",
-  kickoff: "Sat 19:00",
-  home: "APOEL",
-  away: "Omonia",
-  venue: "GSP Stadium"
-};
-
-const latestResults = [
-  { home: "Aris", away: "Apollon", score: "2-1", status: "FT" },
-  { home: "AEK Larnaca", away: "Pafos", score: "1-1", status: "FT" },
-  { home: "Anorthosis", away: "AEL", score: "3-0", status: "FT" }
-];
-
-const upcomingFixtures = [
-  { home: "APOEL", away: "Omonia", date: "Sat", time: "19:00" },
-  { home: "Pafos", away: "Aris", date: "Sun", time: "18:00" },
-  { home: "Apollon", away: "AEK Larnaca", date: "Sun", time: "20:00" }
-];
-
-const tablePreview = [
-  { team: "Pafos", played: 26, gd: 29, points: 62 },
-  { team: "Aris", played: 26, gd: 24, points: 57 },
-  { team: "Omonia", played: 26, gd: 18, points: 51 },
-  { team: "APOEL", played: 26, gd: 16, points: 49 },
-  { team: "AEK Larnaca", played: 26, gd: 13, points: 47 }
-];
-
-const clubs = ["APOEL", "Omonia", "Pafos", "Aris", "Apollon", "AEK"];
-
-const news = [
-  {
-    category: "Transfer Watch",
-    title: "Clubs prepare early moves before the summer window accelerates",
-    time: "12 min read"
-  },
-  {
-    category: "Match Preview",
-    title: "Five tactical questions before the next Nicosia derby",
-    time: "8 min read"
-  },
-  {
-    category: "League Focus",
-    title: "How the title race could be shaped by the opening month",
-    time: "6 min read"
-  }
-];
-
-function ClubLogo({ name }: { name: string }) {
-  return (
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-[var(--brand)] bg-[#0b0e14] text-sm font-black text-[var(--brand)]">
-      {name.slice(0, 3).toUpperCase()}
-    </div>
-  );
-}
+import { ClubBadge } from "@/components/club-badge";
+import { SectionHeader } from "@/components/section-header";
+import {
+  demoFixtures,
+  demoNews,
+  demoResults,
+  demoStandings,
+  demoTeams,
+  featuredMatch
+} from "@/lib/demo-data";
 
 export default function Home() {
   return (
@@ -117,13 +70,13 @@ export default function Home() {
             <div className="mt-6 rounded-md border border-[var(--line)] bg-[#080b11] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <ClubLogo name={featuredMatch.home} />
+                  <ClubBadge name={featuredMatch.home} />
                   <span className="font-black text-white">{featuredMatch.home}</span>
                 </div>
                 <span className="text-sm font-black text-[var(--muted)]">VS</span>
                 <div className="flex items-center gap-3">
                   <span className="font-black text-white">{featuredMatch.away}</span>
-                  <ClubLogo name={featuredMatch.away} />
+                  <ClubBadge name={featuredMatch.away} />
                 </div>
               </div>
               <dl className="mt-5 grid gap-3 text-sm text-[var(--muted)]">
@@ -157,18 +110,20 @@ export default function Home() {
                 href="/results"
               />
               <div className="mt-5 grid gap-3">
-                {latestResults.map((match) => (
+                {demoResults.slice(0, 3).map((match) => (
                   <div
                     className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-3 rounded-md border border-[var(--line)] bg-[#080b11] px-3 py-3 text-sm"
-                    key={`${match.home}-${match.away}`}
+                    key={match.id}
                   >
-                    <span className="font-bold text-white">{match.home}</span>
+                    <span className="font-bold text-white">{match.homeTeam.shortName}</span>
                     <span className="rounded-md bg-white px-3 py-1 font-black text-[#080a0f]">
-                      {match.score}
+                      {match.homeScore}-{match.awayScore}
                     </span>
-                    <span className="text-right font-bold text-white">{match.away}</span>
+                    <span className="text-right font-bold text-white">
+                      {match.awayTeam.shortName}
+                    </span>
                     <span className="text-xs font-bold text-[var(--success)]">
-                      {match.status}
+                      FT
                     </span>
                   </div>
                 ))}
@@ -182,20 +137,21 @@ export default function Home() {
                 href="/fixtures"
               />
               <div className="mt-5 grid gap-3">
-                {upcomingFixtures.map((match) => (
+                {demoFixtures.slice(0, 3).map((match) => (
                   <div
                     className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-md border border-[var(--line)] bg-[#080b11] px-3 py-3 text-sm"
-                    key={`${match.home}-${match.away}`}
+                    key={match.id}
                   >
                     <div className="rounded-md border border-[var(--brand)] px-2 py-1 text-center">
                       <p className="text-xs font-bold text-[var(--brand)]">
-                        {match.date}
+                        {match.dateLabel.split(" ")[0]}
                       </p>
                       <p className="text-xs text-white">{match.time}</p>
                     </div>
                     <div className="font-bold text-white">
-                      {match.home} <span className="text-[var(--muted)]">vs</span>{" "}
-                      {match.away}
+                      {match.homeTeam.shortName}{" "}
+                      <span className="text-[var(--muted)]">vs</span>{" "}
+                      {match.awayTeam.shortName}
                     </div>
                     <Clock size={16} className="text-[var(--muted)]" aria-hidden="true" />
                   </div>
@@ -211,16 +167,18 @@ export default function Home() {
               href="/clubs"
             />
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {clubs.map((club) => (
+              {demoTeams.slice(0, 6).map((club) => (
                 <Link
                   href="/clubs"
                   className="animate-lift rounded-lg border border-[var(--line)] bg-[#080b11] p-4 text-center"
-                  key={club}
+                  key={club.id}
                 >
-                  <div className="mx-auto">
-                    <ClubLogo name={club} />
+                  <div className="flex justify-center">
+                    <ClubBadge name={club.shortName} color={club.primaryColor} />
                   </div>
-                  <p className="mt-3 text-sm font-black text-white">{club}</p>
+                  <p className="mt-3 text-sm font-black text-white">
+                    {club.shortName}
+                  </p>
                 </Link>
               ))}
             </div>
@@ -233,7 +191,7 @@ export default function Home() {
               href="/news"
             />
             <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {news.map((story) => (
+              {demoNews.map((story) => (
                 <article
                   className="animate-lift rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
                   key={story.title}
@@ -269,15 +227,18 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {tablePreview.map((row, index) => (
-                  <tr className="border-t border-[var(--line)]" key={row.team}>
+                {demoStandings.slice(0, 5).map((row, index) => (
+                  <tr className="border-t border-[var(--line)]" key={row.team.id}>
                     <td className="px-3 py-3 text-[var(--brand)]">{index + 1}</td>
-                    <td className="px-3 py-3 font-bold text-white">{row.team}</td>
+                    <td className="px-3 py-3 font-bold text-white">
+                      {row.team.shortName}
+                    </td>
                     <td className="px-3 py-3 text-right text-[var(--muted)]">
                       {row.played}
                     </td>
                     <td className="px-3 py-3 text-right text-[var(--muted)]">
-                      +{row.gd}
+                      {row.goalDifference > 0 ? "+" : ""}
+                      {row.goalDifference}
                     </td>
                     <td className="px-3 py-3 text-right font-black text-white">
                       {row.points}
@@ -289,31 +250,6 @@ export default function Home() {
           </div>
         </aside>
       </div>
-    </div>
-  );
-}
-
-function SectionHeader({
-  icon,
-  title,
-  href
-}: {
-  icon: React.ReactNode;
-  title: string;
-  href: string;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <h2 className="inline-flex items-center gap-2 text-lg font-black text-white">
-        <span className="gold-text">{icon}</span>
-        {title}
-      </h2>
-      <Link
-        href={href}
-        className="inline-flex items-center gap-1 text-sm font-bold text-[var(--brand)]"
-      >
-        View all <ChevronRight size={15} aria-hidden="true" />
-      </Link>
     </div>
   );
 }
