@@ -45,6 +45,14 @@ async function runSync(request: NextRequest) {
 
 function assertCronSecret(request: NextRequest) {
   const env = getServerEnv();
+  const isVercelCron =
+    process.env.VERCEL === "1" &&
+    request.headers.get("user-agent") === "vercel-cron/1.0" &&
+    Boolean(request.headers.get("x-vercel-cron-schedule"));
+
+  if (isVercelCron) {
+    return;
+  }
 
   if (!env.cronSecret) {
     throw new Error("CRON_SECRET must be set before sync routes can run.");

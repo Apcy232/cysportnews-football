@@ -1,8 +1,12 @@
 import { Trophy } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { demoStandings } from "@/lib/demo-data";
+import { getFootballDataset } from "@/lib/data/cyprus-football";
 
-export default function TablePage() {
+export const dynamic = "force-dynamic";
+
+export default async function TablePage() {
+  const { standings } = await getFootballDataset();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-8">
@@ -38,7 +42,7 @@ export default function TablePage() {
               </tr>
             </thead>
             <tbody>
-              {demoStandings.map((row, index) => (
+              {standings.map((row, index) => (
                 <tr className="border-t border-[var(--line)]" key={row.team.id}>
                   <td className="px-4 py-4 font-black text-[var(--brand)]">
                     {index + 1}

@@ -11,16 +11,24 @@ import {
 import Link from "next/link";
 import { ClubBadge } from "@/components/club-badge";
 import { SectionHeader } from "@/components/section-header";
-import {
-  demoFixtures,
-  demoNews,
-  demoResults,
-  demoStandings,
-  demoTeams,
-  featuredMatch
-} from "@/lib/demo-data";
+import { getFootballDataset } from "@/lib/data/cyprus-football";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const data = await getFootballDataset();
+  const featuredFixture = data.fixtures[0];
+  const featuredMatch = {
+    competition: "Cyprus First Division",
+    round: featuredFixture?.round ?? "Matchday",
+    kickoff: featuredFixture
+      ? `${featuredFixture.dateLabel}, ${featuredFixture.time}`
+      : "Kickoff TBC",
+    home: featuredFixture?.homeTeam.shortName ?? "Home",
+    away: featuredFixture?.awayTeam.shortName ?? "Away",
+    venue: featuredFixture?.venue ?? "Venue TBC"
+  };
+
   return (
     <div>
       <section className="relative overflow-hidden border-b border-[var(--line)] bg-[#07090d]">
@@ -110,7 +118,7 @@ export default function Home() {
                 href="/results"
               />
               <div className="mt-5 grid gap-3">
-                {demoResults.slice(0, 3).map((match) => (
+                {data.results.slice(0, 3).map((match) => (
                   <div
                     className="grid grid-cols-[1fr_auto_1fr_auto] items-center gap-3 rounded-md border border-[var(--line)] bg-[#080b11] px-3 py-3 text-sm"
                     key={match.id}
@@ -137,7 +145,7 @@ export default function Home() {
                 href="/fixtures"
               />
               <div className="mt-5 grid gap-3">
-                {demoFixtures.slice(0, 3).map((match) => (
+                {data.fixtures.slice(0, 3).map((match) => (
                   <div
                     className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-md border border-[var(--line)] bg-[#080b11] px-3 py-3 text-sm"
                     key={match.id}
@@ -167,7 +175,7 @@ export default function Home() {
               href="/clubs"
             />
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {demoTeams.slice(0, 6).map((club) => (
+              {data.teams.slice(0, 6).map((club) => (
                 <Link
                   href="/clubs"
                   className="animate-lift rounded-lg border border-[var(--line)] bg-[#080b11] p-4 text-center"
@@ -191,7 +199,7 @@ export default function Home() {
               href="/news"
             />
             <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {demoNews.map((story) => (
+              {data.news.slice(0, 3).map((story) => (
                 <article
                   className="animate-lift rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
                   key={story.title}
@@ -227,7 +235,7 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {demoStandings.slice(0, 5).map((row, index) => (
+                {data.standings.slice(0, 5).map((row, index) => (
                   <tr className="border-t border-[var(--line)]" key={row.team.id}>
                     <td className="px-3 py-3 text-[var(--brand)]">{index + 1}</td>
                     <td className="px-3 py-3 font-bold text-white">

@@ -1,8 +1,12 @@
 import { CalendarDays, Clock, MapPin } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { demoFixtures } from "@/lib/demo-data";
+import { getFootballDataset } from "@/lib/data/cyprus-football";
 
-export default function FixturesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function FixturesPage() {
+  const { fixtures } = await getFootballDataset();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-8">
@@ -17,7 +21,7 @@ export default function FixturesPage() {
       </div>
 
       <section className="mt-8 grid gap-4">
-        {demoFixtures.map((fixture) => (
+        {fixtures.map((fixture) => (
           <article
             className="sports-card animate-lift rounded-lg p-5"
             key={fixture.id}

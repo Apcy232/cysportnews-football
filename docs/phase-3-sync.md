@@ -1,6 +1,8 @@
 # Phase 3: Supabase and API-Football Sync
 
-Phase 3 connects the app to live football data. The code is ready, but the live run needs real secrets from your own Supabase and API-Football accounts.
+Phase 3 connects the app to live football data. The public pages now read from
+Supabase when environment variables are configured and fall back to demo data
+when they are not.
 
 ## Required accounts
 
@@ -95,6 +97,12 @@ Allowed targets:
 - `standings`
 
 The sync writes a row to `sync_runs` before it starts, then updates that row with success or failure details.
+
+## Automatic imports on Vercel
+
+`vercel.json` schedules `/api/cron/sync` every 30 minutes. Vercel Cron Jobs make
+an HTTP GET request to that path and include cron-specific headers. Manual
+requests still require `CRON_SECRET`.
 
 ## What gets imported now
 

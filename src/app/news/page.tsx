@@ -1,7 +1,11 @@
 import { Newspaper } from "lucide-react";
-import { demoNews } from "@/lib/demo-data";
+import { getFootballDataset } from "@/lib/data/cyprus-football";
 
-export default function NewsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewsPage() {
+  const { news } = await getFootballDataset();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 border-b border-[var(--line)] pb-8">
@@ -16,7 +20,7 @@ export default function NewsPage() {
       </div>
 
       <section className="mt-8 grid gap-5 md:grid-cols-3">
-        {demoNews.map((story) => (
+        {news.map((story) => (
           <article className="sports-card animate-lift rounded-lg p-5" key={story.id}>
             <div className="flex items-center justify-between">
               <p className="text-xs font-bold uppercase text-[var(--brand)]">

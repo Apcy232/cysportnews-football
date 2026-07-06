@@ -2,9 +2,9 @@
 
 Production-ready football news and data website focused on Cypriot football.
 
-The public website currently runs in **safe demo-data mode**. That means the
-MVP works without Supabase or API-Football credentials, while the real sync code
-stays ready for later.
+The public website runs with real Supabase data when credentials are configured.
+Without credentials, it falls back to **safe demo-data mode** so the site still
+works locally.
 
 ## What this project uses
 
@@ -63,7 +63,7 @@ This lets the website look and behave like a real football site tonight, before
 live API access is connected. Later, each page can swap the demo data for
 Supabase queries without changing the visual design.
 
-Demo mode currently powers:
+The live-ready data layer powers:
 
 - Home
 - Fixtures
@@ -72,7 +72,7 @@ Demo mode currently powers:
 - Clubs
 - News
 
-## Adding real credentials later
+## Adding real credentials
 
 Create a local environment file:
 
@@ -111,6 +111,19 @@ curl "http://localhost:3000/api/cron/sync?target=all&secret=YOUR_CRON_SECRET"
 Use Sportmonks only if API-Football does not provide complete Cyprus First
 Division coverage.
 
+## Automatic sync
+
+`vercel.json` schedules `/api/cron/sync` every 30 minutes on Vercel.
+
+The same route can be triggered manually with `CRON_SECRET`:
+
+```bash
+curl "http://localhost:3000/api/cron/sync?target=all&secret=YOUR_CRON_SECRET"
+```
+
+Every sync writes a row to `sync_runs` so failures and successful imports can be
+reviewed later.
+
 ## Phase status
 
 Phase 1 created the app foundation and CYsportnews Football branding.
@@ -119,5 +132,5 @@ Phase 2 adds the Supabase database schema as migrations. Live Supabase credentia
 
 Phase 3 adds the API-Football integration and reusable Supabase synchronization service.
 
-The current MVP keeps that integration code but does not require credentials for
-normal website browsing.
+The current MVP keeps demo fallback data for local development, but production
+pages are wired to Supabase when the environment variables are present.
