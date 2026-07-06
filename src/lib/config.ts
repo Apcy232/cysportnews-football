@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "Cyprus First Division",
+  name: "CYsportnews Football",
   description:
-    "Fixtures, results, league table, clubs, players and news for the Cyprus First Division.",
+    "Premium Cypriot football news, fixtures, results, tables, clubs and player coverage.",
   primaryDataProvider: "api-football",
   fallbackDataProvider: "sportmonks"
 } as const;
