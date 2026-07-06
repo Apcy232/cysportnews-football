@@ -58,7 +58,7 @@ create table venues (
   name text not null,
   city text,
   capacity integer,
-  api_football_venue_id integer,
+  api_football_venue_id integer unique,
   sportmonks_venue_id bigint,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

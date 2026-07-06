@@ -23,6 +23,7 @@ No web scraping will be used unless explicitly approved.
 - `src/lib/supabase` is where Supabase client helpers live.
 - `supabase/migrations` contains the database blueprint.
 - `docs/supabase.md` explains the Supabase setup in plain language.
+- `docs/phase-3-sync.md` explains the API-Football sync setup.
 - `.env.example` lists the environment variables the app will need.
 
 ## Local development
@@ -50,3 +51,5 @@ http://localhost:3000
 Phase 1 created the app foundation and CYsportnews Football branding.
 
 Phase 2 adds the Supabase database schema as migrations. Live Supabase credentials and API imports come next.
+
+Phase 3 adds the API-Football integration and reusable Supabase synchronization service.
