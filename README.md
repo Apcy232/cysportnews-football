@@ -1,6 +1,6 @@
-# Cyprus First Division Website
+# CYsportnews Football
 
-Production-ready website for Cyprus First Division football data.
+Production-ready football news and data website focused on Cypriot football.
 
 ## What this project uses
 
@@ -21,6 +21,8 @@ No web scraping will be used unless explicitly approved.
 - `src/lib` contains shared application logic.
 - `src/lib/football-data` is where API-Football and Sportmonks integration code will live.
 - `src/lib/supabase` is where Supabase client helpers live.
+- `supabase/migrations` contains the database blueprint.
+- `docs/supabase.md` explains the Supabase setup in plain language.
 - `.env.example` lists the environment variables the app will need.
 
 ## Local development
@@ -43,6 +45,8 @@ Open:
 http://localhost:3000
 ```
 
-## Phase 1 scope
+## Phase status
 
-Phase 1 creates the project foundation only. It does not connect Supabase or import live football data yet. Those are Phase 2 and Phase 3 tasks.
+Phase 1 created the app foundation and CYsportnews Football branding.
+
+Phase 2 adds the Supabase database schema as migrations. Live Supabase credentials and API imports come next.
