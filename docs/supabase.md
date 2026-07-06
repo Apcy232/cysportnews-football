@@ -1,6 +1,10 @@
 # Supabase Setup
 
-Phase 2 stores the database structure as migrations. A migration is a saved SQL file that Supabase can run to create or update the database.
+Supabase is optional for the current MVP. The website works without Supabase and
+uses local manual data from `src/lib/demo-data.ts`.
+
+These migrations are kept as a future database blueprint. A migration is a saved
+SQL file that Supabase can run to create or update the database.
 
 ## What the first migration creates
 
@@ -25,11 +29,12 @@ The public website can read published football data. Browser users cannot write 
 
 Future import jobs will write using the Supabase service role key from server-only code. That key must never be exposed in browser code.
 
-## Provider strategy
+## MVP strategy
 
-API-Football is the primary data source. Sportmonks is the fallback only if API-Football cannot provide complete Cyprus First Division coverage.
+The launch version uses local manual data only. No paid football API is required.
 
-Provider IDs are stored directly on important tables, for example `api_football_fixture_id` on `matches`. This lets sync jobs update existing records instead of creating duplicates.
+Some provider ID columns remain in the schema so the database can support an
+automated feed in the future if needed, but they are not used for the MVP.
 
 ## How to apply these migrations later
 

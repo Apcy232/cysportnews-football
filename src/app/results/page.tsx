@@ -15,8 +15,7 @@ export default async function ResultsPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Results</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Recent demo results, styled like the live result centre that will be
-          powered by API-Football.
+          Recent Cyprus First Division results powered by local manual MVP data.
         </p>
       </div>
 

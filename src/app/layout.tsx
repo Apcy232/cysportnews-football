@@ -47,9 +47,9 @@ export default function RootLayout({
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-xs text-[var(--muted)] sm:px-6 lg:px-8">
               <span className="inline-flex items-center gap-2">
                 <Radio size={14} className="gold-text" aria-hidden="true" />
-                Cypriot football coverage, built for live data
+                Cypriot football coverage, built for launch
               </span>
-              <span className="hidden sm:inline">API-Football primary feed</span>
+              <span className="hidden sm:inline">Manual MVP data mode</span>
             </div>
           </div>
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -94,8 +94,8 @@ export default function RootLayout({
                 CYsportnews <span className="gold-text">Football</span>
               </Link>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
-                Premium Cypriot football coverage with automated fixtures,
-                results, tables and statistics planned through API-Football.
+                Premium Cypriot football coverage with fixtures, results,
+                tables, clubs and news ready for launch.
               </p>
             </div>
             <p className="text-sm text-[var(--muted)]">

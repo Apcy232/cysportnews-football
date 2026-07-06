@@ -15,8 +15,7 @@ export default async function FixturesPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Fixtures</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Demo Cyprus First Division fixtures. These will switch to live
-          API-Football data once credentials are added.
+          Cyprus First Division fixtures powered by local manual MVP data.
         </p>
       </div>
 

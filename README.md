@@ -1,38 +1,44 @@
 # CYsportnews Football
 
-Production-ready football news and data website focused on Cypriot football.
+Production-ready MVP website for Cypriot football news and league coverage.
 
-The public website runs with real Supabase data when credentials are configured.
-Without credentials, it falls back to **safe demo-data mode** so the site still
-works locally.
+The launch version uses **local manual data**. It does not require API-Football,
+Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
 
-## What this project uses
+## What Works Now
 
-- **Next.js** for the website and server routes.
-- **TypeScript** to catch mistakes before the site runs.
-- **Tailwind CSS** for fast, consistent styling.
-- **Supabase** for the database.
-- **Vercel** for hosting and scheduled updates.
-- **API-Football** as the primary football data source.
-- **Sportmonks** as the fallback provider if API-Football coverage is incomplete.
+- Home page
+- Fixtures page
+- Results page
+- League Table page
+- Clubs page
+- News page
+- Mobile-friendly dark sports-media design
+- Local manual data for teams, fixtures, results, standings and news
+- Optional Supabase read support for a future database-backed version
+- Vercel-ready Next.js build
 
-No web scraping will be used unless explicitly approved.
+## What This Project Uses
 
-## Folder guide
+- **Next.js** for the website.
+- **TypeScript** to catch mistakes early.
+- **Tailwind CSS** for styling.
+- **Supabase** as an optional future database.
+- **Vercel** for deployment.
+
+No web scraping and no paid football API are used in the MVP.
+
+## Folder Guide
 
 - `src/app` contains website pages and global layout.
 - `src/components` contains reusable interface pieces.
-- `src/lib` contains shared application logic.
-- `src/lib/demo-data.ts` contains the temporary MVP data for teams, fixtures,
-  results, standings and news.
-- `src/lib/football-data` is where API-Football and Sportmonks integration code will live.
-- `src/lib/supabase` is where Supabase client helpers live.
-- `supabase/migrations` contains the database blueprint.
-- `docs/supabase.md` explains the Supabase setup in plain language.
-- `docs/phase-3-sync.md` explains the API-Football sync setup.
-- `.env.example` lists the environment variables the app will need.
+- `src/lib/demo-data.ts` contains the manual MVP data.
+- `src/lib/data/cyprus-football.ts` loads Supabase data only if Supabase env vars exist; otherwise it uses manual data.
+- `src/lib/supabase` contains optional Supabase client helpers.
+- `supabase/migrations` contains the optional database blueprint for later.
+- `.env.example` lists optional environment variables.
 
-## Local development
+## Local Development
 
 Install dependencies:
 
@@ -52,85 +58,69 @@ Open:
 http://localhost:3000
 ```
 
-No API keys are required for the homepage, fixtures, results, league table,
-clubs or news pages.
+## Manual Data
 
-## Demo data mode
+Edit this file to update the MVP manually:
 
-The MVP pages read from `src/lib/demo-data.ts`.
+```text
+src/lib/demo-data.ts
+```
 
-This lets the website look and behave like a real football site tonight, before
-live API access is connected. Later, each page can swap the demo data for
-Supabase queries without changing the visual design.
+That file controls:
 
-The live-ready data layer powers:
-
-- Home
+- Teams
 - Fixtures
 - Results
-- League Table
-- Clubs
+- League table
 - News
 
-## Adding real credentials
+## Optional Supabase Later
 
-Create a local environment file:
+The site works without Supabase.
+
+If you later want to connect Supabase, create `.env.local`:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then add your real values:
+Then fill:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-API_FOOTBALL_KEY=
-API_FOOTBALL_BASE_URL=https://v3.football.api-sports.io
-API_FOOTBALL_SEASON=2026
-CRON_SECRET=
 ```
 
-After credentials are present, check API-Football coverage:
+Without those values, the website automatically uses local manual data.
+
+## Vercel Deployment
+
+This MVP can be deployed without environment variables.
+
+Use:
 
 ```bash
-pnpm sync:check
+pnpm build
 ```
 
-Then run the protected sync endpoint locally:
+Then deploy the repository to Vercel. The default Vercel settings for Next.js
+are enough:
 
-```bash
-pnpm dev
-```
+- Framework preset: Next.js
+- Install command: `pnpm install`
+- Build command: `pnpm build`
+- Output directory: leave default
 
-```bash
-curl "http://localhost:3000/api/cron/sync?target=all&secret=YOUR_CRON_SECRET"
-```
+## MVP Status
 
-Use Sportmonks only if API-Football does not provide complete Cyprus First
-Division coverage.
+Ready to publish:
 
-## Automatic sync
+- Manual-data website works locally and in production builds.
+- Main pages are complete for the MVP.
+- No paid API key is required.
+- Supabase is optional.
 
-`vercel.json` schedules `/api/cron/sync` every 30 minutes on Vercel.
+Still manual:
 
-The same route can be triggered manually with `CRON_SECRET`:
-
-```bash
-curl "http://localhost:3000/api/cron/sync?target=all&secret=YOUR_CRON_SECRET"
-```
-
-Every sync writes a row to `sync_runs` so failures and successful imports can be
-reviewed later.
-
-## Phase status
-
-Phase 1 created the app foundation and CYsportnews Football branding.
-
-Phase 2 adds the Supabase database schema as migrations. Live Supabase credentials and API imports come next.
-
-Phase 3 adds the API-Football integration and reusable Supabase synchronization service.
-
-The current MVP keeps demo fallback data for local development, but production
-pages are wired to Supabase when the environment variables are present.
+- Updating fixtures, results, standings and news means editing `src/lib/demo-data.ts`.
+- Automatic data sync is intentionally disabled for launch.
