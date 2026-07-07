@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function FixturesPage() {
   const { fixtures } = await getFootballDataset();
+  const venues = new Set(fixtures.map((fixture) => fixture.venue)).size;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -18,6 +19,27 @@ export default async function FixturesPage() {
           Cyprus First Division fixtures powered by local manual MVP data.
         </p>
       </div>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{fixtures.length}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Upcoming matches
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{venues}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Venues
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">Manual</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Data mode
+          </p>
+        </div>
+      </section>
 
       <section className="mt-8 grid gap-4">
         {fixtures.map((fixture) => (

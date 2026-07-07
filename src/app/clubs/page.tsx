@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ClubsPage() {
   const { standings, teams } = await getFootballDataset();
+  const cities = new Set(teams.map((team) => team.city)).size;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -19,6 +20,27 @@ export default async function ClubsPage() {
           replaced by live Supabase data.
         </p>
       </div>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{teams.length}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Featured clubs
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{cities}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Cities
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">MVP</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Manual profiles
+          </p>
+        </div>
+      </section>
 
       <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {teams.map((team) => {

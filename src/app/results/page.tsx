@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 
 export default async function ResultsPage() {
   const { results } = await getFootballDataset();
+  const goals = results.reduce(
+    (total, result) => total + result.homeScore + result.awayScore,
+    0
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -18,6 +22,27 @@ export default async function ResultsPage() {
           Recent Cyprus First Division results powered by local manual MVP data.
         </p>
       </div>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{results.length}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Recent results
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{goals}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Goals shown
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">FT</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Final scores
+          </p>
+        </div>
+      </section>
 
       <section className="mt-8 grid gap-4">
         {results.map((result) => (

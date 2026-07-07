@@ -41,6 +41,11 @@ a {
     var(--surface);
   border: 1px solid var(--line);
   box-shadow: 0 20px 50px rgb(0 0 0 / 0.28);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
 }
 
 .gold-text {
@@ -57,4 +62,18 @@ a {
 .animate-lift:hover {
   transform: translateY(-3px);
   border-color: rgb(214 173 82 / 0.7);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.38);
+}
+
+.premium-button {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.premium-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgb(214 173 82 / 0.18);
 }

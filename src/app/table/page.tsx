@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function TablePage() {
   const { standings } = await getFootballDataset();
+  const leader = standings[0];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -19,6 +20,31 @@ export default async function TablePage() {
           display live standings after the Supabase sync is connected.
         </p>
       </div>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">{standings.length}</p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Clubs listed
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">
+            {leader?.team.shortName ?? "-"}
+          </p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Current leader
+          </p>
+        </div>
+        <div className="sports-card rounded-lg p-4">
+          <p className="text-2xl font-black text-white">
+            {leader?.points ?? "-"}
+          </p>
+          <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
+            Leader points
+          </p>
+        </div>
+      </section>
 
       <section className="sports-card mt-8 overflow-hidden rounded-lg">
         <div className="flex items-center gap-3 border-b border-[var(--line)] p-5">

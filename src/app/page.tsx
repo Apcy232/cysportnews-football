@@ -32,9 +32,9 @@ export default async function Home() {
   return (
     <div>
       <section className="relative overflow-hidden border-b border-[var(--line)] bg-[#07090d]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(214,173,82,0.22),_transparent_38%),linear-gradient(135deg,_rgba(255,255,255,0.08),_transparent_42%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-16">
-          <div className="flex min-h-[430px] flex-col justify-end">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(214,173,82,0.26),_transparent_36%),radial-gradient(circle_at_bottom_left,_rgba(255,255,255,0.08),_transparent_34%),linear-gradient(135deg,_rgba(255,255,255,0.08),_transparent_42%)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-20">
+          <div className="flex min-h-[360px] flex-col justify-center lg:min-h-[500px]">
             <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-md border border-[var(--brand)] bg-[#0c1017]/80 px-3 py-2 text-xs font-bold uppercase text-[var(--brand)]">
               <Flame size={14} aria-hidden="true" />
               Premium Cypriot Football Coverage
@@ -44,26 +44,42 @@ export default async function Home() {
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--muted)]">
               Fixtures, results, standings, clubs, players and sharp football
-              news for the Cyprus First Division, designed for speed and
-              automated updates.
+              news for the Cyprus First Division, built as a fast manual-data
+              MVP that is ready to publish.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 rounded-lg border border-[var(--line)] bg-[#080b11]/70 p-3 text-center">
+              <div>
+                <p className="text-2xl font-black text-white">{data.teams.length}</p>
+                <p className="text-xs uppercase text-[var(--muted)]">Clubs</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-white">
+                  {data.fixtures.length}
+                </p>
+                <p className="text-xs uppercase text-[var(--muted)]">Fixtures</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-white">{data.news.length}</p>
+                <p className="text-xs uppercase text-[var(--muted)]">Stories</p>
+              </div>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/fixtures"
-                className="inline-flex items-center gap-2 rounded-md bg-[var(--brand)] px-5 py-3 text-sm font-black text-[#080a0f] hover:bg-[#f0c96f]"
+                className="premium-button inline-flex items-center gap-2 rounded-md bg-[var(--brand)] px-5 py-3 text-sm font-black text-[#080a0f] hover:bg-[#f0c96f]"
               >
                 Fixtures <ArrowRight size={16} aria-hidden="true" />
               </Link>
               <Link
                 href="/news"
-                className="inline-flex items-center gap-2 rounded-md border border-[var(--line)] bg-[#0d1118] px-5 py-3 text-sm font-bold text-white hover:border-[var(--brand)]"
+                className="premium-button inline-flex items-center gap-2 rounded-md border border-[var(--line)] bg-[#0d1118] px-5 py-3 text-sm font-bold text-white hover:border-[var(--brand)]"
               >
                 Latest news
               </Link>
             </div>
           </div>
 
-          <aside className="sports-card animate-lift rounded-lg p-5">
+          <aside className="sports-card animate-lift self-center rounded-lg p-5 lg:p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase text-[var(--brand)]">
