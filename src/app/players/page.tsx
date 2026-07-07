@@ -2,8 +2,16 @@ import { Flag, Shield, UserRound } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
 import { SeasonSelector } from "@/components/season-selector";
 import { getFootballDataset, normalizeSeason } from "@/lib/data/cyprus-football";
+import { createMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = createMetadata({
+  title: "Players & Top Scorers",
+  description:
+    "Browse Cyprus First Division player squads and top scorers by season from API-Football data.",
+  path: "/players"
+});
 
 type PlayersPageProps = {
   searchParams?: Promise<{

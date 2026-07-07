@@ -6,8 +6,16 @@ import {
   getFootballDataset,
   normalizeSeason
 } from "@/lib/data/cyprus-football";
+import { createMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = createMetadata({
+  title: "Cyprus First Division Results",
+  description:
+    "Check Cyprus First Division results by season with match scores, venues and latest completed fixtures.",
+  path: "/results"
+});
 
 type ResultsPageProps = {
   searchParams?: Promise<{

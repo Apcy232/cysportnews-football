@@ -13,8 +13,16 @@ import Link from "next/link";
 import { ClubBadge } from "@/components/club-badge";
 import { SectionHeader } from "@/components/section-header";
 import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { createMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = createMetadata({
+  title: "Cypriot Football News, Fixtures & Results",
+  description:
+    "Follow Cyprus First Division fixtures, results, standings, clubs, players and football news on CYsportnews Football.",
+  path: "/"
+});
 
 export default async function Home() {
   const data = await getFootballDataset();

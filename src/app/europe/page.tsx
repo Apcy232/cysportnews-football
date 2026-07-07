@@ -1,8 +1,16 @@
 import { AlertCircle, Globe2, Trophy } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
 import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { createMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = createMetadata({
+  title: "Cypriot Clubs in Europe",
+  description:
+    "Track European fixtures and competition updates for Cypriot clubs including Omonia, Pafos, AEK Larnaca and Aris Limassol.",
+  path: "/europe"
+});
 
 export default async function EuropePage() {
   const { europeanClubCards } = await getFootballDataset();

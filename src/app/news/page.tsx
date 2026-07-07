@@ -1,7 +1,15 @@
 import { Newspaper } from "lucide-react";
 import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { createMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = createMetadata({
+  title: "Cypriot Football News",
+  description:
+    "Read Cyprus football news, fixture updates, result stories and league headlines from CYsportnews Football.",
+  path: "/news"
+});
 
 export default async function NewsPage() {
   const { news } = await getFootballDataset();

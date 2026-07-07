@@ -22,16 +22,25 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: siteConfig.url
+  },
   icons: {
     icon: "/favicon.svg"
   },
   openGraph: {
     title: siteConfig.name,
     description: siteConfig.description,
-    type: "website"
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    type: "website",
+    locale: "en_CY"
+  },
+  twitter: {
+    card: "summary",
+    title: siteConfig.name,
+    description: siteConfig.description
   }
 };
 
