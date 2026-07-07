@@ -3,8 +3,9 @@ const CYPRUS_FIRST_DIVISION_LEAGUE_ID = 318;
 export const CYPRUS_FIRST_DIVISION_SEASON = 2025;
 export const API_FOOTBALL_SEASONS = [2025, 2024, 2023, 2022, 2021];
 const CACHE_SECONDS = 60 * 20;
-const EMPTY_2025_NOTICE =
-  "2025/26 data is not available yet from API-Football. Showing latest available season.";
+const CALCULATED_2025_NOTICE =
+  "Calculated from 2025/26 results — official table not yet available.";
+const NOT_STARTED_2025_NOTICE = "2025/26 season has not started yet.";
 
 export type FootballTeam = {
   id: string;
@@ -121,7 +122,6 @@ type DatasetOptions = {
   season?: number;
   requestedSeason?: number;
   seasonNotice?: string;
-  allowFallback?: boolean;
 };
 
 type ApiResponse<T> = {
@@ -252,23 +252,22 @@ export async function getFootballDataset(
       ...extractTeamsFromFixtures(fixturesResponse)
     ]);
     const teamMap = new Map(teams.map((team) => [team.id, team]));
-    const standings = mapStandings(standingsResponse, teamMap);
     const fixtures = mapFixtures(fixturesResponse, teamMap, "upcoming");
     const results = mapFixtures(fixturesResponse, teamMap, "finished") as FootballResult[];
-
-    if (
-      season === 2025 &&
-      options.allowFallback !== false &&
-      isSeasonEmpty({ standings, fixtures, results })
-    ) {
-      return getFootballDataset({
-        season: 2024,
-        requestedSeason,
-        seasonNotice: EMPTY_2025_NOTICE,
-        allowFallback: false
-      });
-    }
-
+    const officialStandings = mapStandings(standingsResponse, teamMap);
+    const calculatedStandings =
+      season === 2025 && officialStandings.length === 0
+        ? calculateStandingsFromResults(results)
+        : [];
+    const standings =
+      officialStandings.length > 0 ? officialStandings : calculatedStandings;
+    const seasonNotice =
+      options.seasonNotice ??
+      (season === 2025 && officialStandings.length === 0
+        ? calculatedStandings.length > 0
+          ? CALCULATED_2025_NOTICE
+          : NOT_STARTED_2025_NOTICE
+        : undefined);
     const topScorers = mapTopScorers(topScorersResponse);
     const squadPlayers = await getSquadPlayers(teams, apiKey);
     const players = mergePlayers([...mapLeaguePlayers(playersResponse, teamMap), ...squadPlayers]);
@@ -276,8 +275,8 @@ export async function getFootballDataset(
     const currentSeason = {
       id: String(season),
       label: formatSeasonLabel(season),
-      note: "Live standings from API-Football.",
-      championTeamId: standings[0]?.teamId,
+      note: seasonNotice ?? "Live standings from API-Football.",
+      championTeamId: officialStandings.length > 0 ? standings[0]?.teamId : undefined,
       standings
     };
 
@@ -285,7 +284,7 @@ export async function getFootballDataset(
       source: "api-football",
       season,
       requestedSeason,
-      seasonNotice: options.seasonNotice,
+      seasonNotice,
       teams,
       fixtures,
       results,
@@ -295,12 +294,12 @@ export async function getFootballDataset(
       topScorers,
       seasons: buildSeasonList(season, currentSeason),
       currentSeason,
-      previousChampions: standings[0]
+      previousChampions: officialStandings[0]
         ? [
             {
               seasonId: String(season),
               seasonLabel: formatSeasonLabel(season),
-              champion: standings[0].team
+              champion: officialStandings[0].team
             }
           ]
         : [],
@@ -522,6 +521,81 @@ function mapStandings(
   });
 }
 
+function calculateStandingsFromResults(results: FootballResult[]) {
+  const table = new Map<string, FootballStanding>();
+
+  for (const result of results) {
+    const homeRow = getCalculatedStandingRow(table, result.homeTeam);
+    const awayRow = getCalculatedStandingRow(table, result.awayTeam);
+    const homeGoals = result.homeScore;
+    const awayGoals = result.awayScore;
+
+    homeRow.played += 1;
+    awayRow.played += 1;
+    homeRow.goalsFor += homeGoals;
+    homeRow.goalsAgainst += awayGoals;
+    awayRow.goalsFor += awayGoals;
+    awayRow.goalsAgainst += homeGoals;
+    homeRow.goalDifference = homeRow.goalsFor - homeRow.goalsAgainst;
+    awayRow.goalDifference = awayRow.goalsFor - awayRow.goalsAgainst;
+
+    if (homeGoals > awayGoals) {
+      homeRow.won += 1;
+      homeRow.points += 3;
+      awayRow.lost += 1;
+    } else if (awayGoals > homeGoals) {
+      awayRow.won += 1;
+      awayRow.points += 3;
+      homeRow.lost += 1;
+    } else {
+      homeRow.drawn += 1;
+      awayRow.drawn += 1;
+      homeRow.points += 1;
+      awayRow.points += 1;
+    }
+  }
+
+  return Array.from(table.values()).sort((a, b) => {
+    if (b.points !== a.points) {
+      return b.points - a.points;
+    }
+
+    if (b.goalDifference !== a.goalDifference) {
+      return b.goalDifference - a.goalDifference;
+    }
+
+    return b.goalsFor - a.goalsFor;
+  });
+}
+
+function getCalculatedStandingRow(
+  table: Map<string, FootballStanding>,
+  team: FootballTeam
+) {
+  const existingRow = table.get(team.id);
+
+  if (existingRow) {
+    return existingRow;
+  }
+
+  const row = {
+    teamId: team.id,
+    played: 0,
+    won: 0,
+    drawn: 0,
+    lost: 0,
+    goalsFor: 0,
+    goalsAgainst: 0,
+    points: 0,
+    goalDifference: 0,
+    team
+  };
+
+  table.set(team.id, row);
+
+  return row;
+}
+
 function mapFixtures(
   response: ApiFixtureResponse[],
   teamMap: Map<string, FootballTeam>,
@@ -731,18 +805,6 @@ function emptyDataset(
     europeanClubCards: [],
     hasApiKey
   };
-}
-
-function isSeasonEmpty({
-  standings,
-  fixtures,
-  results
-}: {
-  standings: FootballStanding[];
-  fixtures: FootballFixture[];
-  results: FootballResult[];
-}) {
-  return standings.length === 0 && fixtures.length === 0 && results.length === 0;
 }
 
 function isFinishedFixture(status?: string) {

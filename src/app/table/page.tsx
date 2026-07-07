@@ -24,7 +24,7 @@ export default async function TablePage({ searchParams }: TablePageProps) {
   const { currentSeason, previousChampions, seasons } = data;
   const standings = data.standings;
   const leader = standings[0];
-  const champion = previousChampions.find(
+  const officialChampion = previousChampions.find(
     (item) => item.seasonId === currentSeason.id
   )?.champion;
 
@@ -44,10 +44,10 @@ export default async function TablePage({ searchParams }: TablePageProps) {
           </div>
           <div className="rounded-lg border border-[var(--line)] bg-[#080b11] px-4 py-3">
             <p className="text-xs font-bold uppercase text-[var(--muted)]">
-              Champion
+              Leader
             </p>
             <p className="mt-1 text-lg font-black text-white">
-              {champion?.name ?? leader?.team.name}
+              {leader?.team.name ?? officialChampion?.name ?? "-"}
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default async function TablePage({ searchParams }: TablePageProps) {
             {leader?.points ?? "-"}
           </p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Champion points
+            Leader points
           </p>
         </div>
       </section>

@@ -38,9 +38,9 @@ Season mapping:
 - `2022/23` uses API season `2022`
 - `2021/22` uses API season `2021`
 
-If API-Football has not published 2025/26 standings, fixtures or results yet,
-the site displays a clear notice and automatically shows the latest available
-season, currently 2024/25.
+If API-Football has not published official 2025/26 standings yet, the site
+builds a temporary table from finished 2025/26 results. If no finished matches
+exist, it displays `2025/26 season has not started yet.`
 
 The app fetches:
 
