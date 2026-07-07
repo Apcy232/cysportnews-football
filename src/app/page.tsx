@@ -5,6 +5,7 @@ import {
   CircleDot,
   Clock,
   Flame,
+  Globe2,
   Shield,
   Trophy
 } from "lucide-react";
@@ -202,6 +203,44 @@ export default async function Home() {
                   </div>
                   <p className="mt-3 text-sm font-black text-white">
                     {club.shortName}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="sports-card rounded-lg p-5">
+            <SectionHeader
+              icon={<Globe2 size={18} aria-hidden="true" />}
+              title="Cypriot Clubs in Europe"
+              href="/europe"
+            />
+            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+              European fixtures are manually maintained and should be verified
+              before publication.
+            </p>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              {data.europeanClubCards.slice(0, 4).map((card) => (
+                <Link
+                  className="animate-lift rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
+                  href="/europe"
+                  key={card.id}
+                >
+                  <div className="flex items-center gap-3">
+                    <ClubBadge
+                      name={card.team.shortName}
+                      color={card.team.primaryColor}
+                      size="sm"
+                    />
+                    <div>
+                      <p className="text-xs font-bold uppercase text-[var(--brand)]">
+                        {card.competition}
+                      </p>
+                      <p className="font-black text-white">{card.team.name}</p>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                    {card.headline}
                   </p>
                 </Link>
               ))}

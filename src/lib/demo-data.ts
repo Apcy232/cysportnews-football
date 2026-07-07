@@ -175,23 +175,23 @@ export const demoSeasons = [
   {
     id: "2025-26",
     label: "2025/26",
-    note: "Current manual MVP season. Omonia Nicosia are shown as champions.",
+    note: "Current manual MVP season. Omonia Nicosia are shown as champions in this manually maintained table; verify before publication.",
     championTeamId: "omonia",
     standings: withTeams([
-      { teamId: "omonia", played: 36, won: 24, drawn: 7, lost: 5, goalsFor: 72, goalsAgainst: 31, points: 79 },
-      { teamId: "pafos", played: 36, won: 22, drawn: 8, lost: 6, goalsFor: 67, goalsAgainst: 34, points: 74 },
-      { teamId: "aris", played: 36, won: 21, drawn: 7, lost: 8, goalsFor: 64, goalsAgainst: 38, points: 70 },
-      { teamId: "aek-larnaca", played: 36, won: 19, drawn: 9, lost: 8, goalsFor: 58, goalsAgainst: 37, points: 66 },
-      { teamId: "apoel", played: 36, won: 18, drawn: 8, lost: 10, goalsFor: 55, goalsAgainst: 39, points: 62 },
-      { teamId: "apollon", played: 36, won: 15, drawn: 9, lost: 12, goalsFor: 49, goalsAgainst: 43, points: 54 },
-      { teamId: "anorthosis", played: 33, won: 12, drawn: 8, lost: 13, goalsFor: 41, goalsAgainst: 43, points: 44 },
-      { teamId: "ael", played: 33, won: 11, drawn: 8, lost: 14, goalsFor: 38, goalsAgainst: 46, points: 41 },
-      { teamId: "olympiakos-nicosia", played: 33, won: 10, drawn: 9, lost: 14, goalsFor: 35, goalsAgainst: 44, points: 39 },
-      { teamId: "omonia-aradippou", played: 33, won: 9, drawn: 9, lost: 15, goalsFor: 32, goalsAgainst: 45, points: 36 },
-      { teamId: "akritas-chlorakas", played: 33, won: 9, drawn: 7, lost: 17, goalsFor: 31, goalsAgainst: 49, points: 34 },
+      { teamId: "omonia", played: 36, won: 23, drawn: 8, lost: 5, goalsFor: 68, goalsAgainst: 30, points: 77 },
+      { teamId: "pafos", played: 36, won: 22, drawn: 7, lost: 7, goalsFor: 64, goalsAgainst: 33, points: 73 },
+      { teamId: "aris", played: 36, won: 21, drawn: 8, lost: 7, goalsFor: 62, goalsAgainst: 35, points: 71 },
+      { teamId: "aek-larnaca", played: 36, won: 19, drawn: 10, lost: 7, goalsFor: 57, goalsAgainst: 34, points: 67 },
+      { teamId: "apoel", played: 36, won: 18, drawn: 9, lost: 9, goalsFor: 55, goalsAgainst: 38, points: 63 },
+      { teamId: "apollon", played: 36, won: 15, drawn: 10, lost: 11, goalsFor: 48, goalsAgainst: 41, points: 55 },
+      { teamId: "anorthosis", played: 33, won: 12, drawn: 9, lost: 12, goalsFor: 40, goalsAgainst: 41, points: 45 },
+      { teamId: "ael", played: 33, won: 11, drawn: 9, lost: 13, goalsFor: 37, goalsAgainst: 43, points: 42 },
+      { teamId: "olympiakos-nicosia", played: 33, won: 10, drawn: 9, lost: 14, goalsFor: 35, goalsAgainst: 42, points: 39 },
+      { teamId: "omonia-aradippou", played: 33, won: 9, drawn: 10, lost: 14, goalsFor: 32, goalsAgainst: 43, points: 37 },
+      { teamId: "ethnikos-achna", played: 33, won: 9, drawn: 8, lost: 16, goalsFor: 31, goalsAgainst: 48, points: 35 },
+      { teamId: "akritas-chlorakas", played: 33, won: 8, drawn: 9, lost: 16, goalsFor: 30, goalsAgainst: 47, points: 33 },
       { teamId: "krasava-ypsonas", played: 33, won: 8, drawn: 8, lost: 17, goalsFor: 30, goalsAgainst: 50, points: 32 },
-      { teamId: "ethnikos-achna", played: 33, won: 7, drawn: 8, lost: 18, goalsFor: 28, goalsAgainst: 53, points: 29 },
-      { teamId: "enosis-neon", played: 33, won: 5, drawn: 8, lost: 20, goalsFor: 25, goalsAgainst: 61, points: 23 }
+      { teamId: "enosis-neon", played: 33, won: 6, drawn: 8, lost: 19, goalsFor: 26, goalsAgainst: 57, points: 26 }
     ])
   },
   {
@@ -362,136 +362,155 @@ export const demoResults = [
 
 export const demoPlayers = [
   {
-    id: "ryan-mmaee",
-    name: "Ryan Mmaee",
+    id: "omonia-goalkeeper",
+    name: "Omonia squad profile",
     teamId: "omonia",
-    position: "Forward",
-    age: 28,
-    goals: 13,
-    assists: 5,
-    rating: 7.7,
+    position: "Goalkeeper",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "omonia")!
   },
   {
-    id: "willy-semedo",
-    name: "Willy Semedo",
+    id: "omonia-defender",
+    name: "Omonia squad profile",
     teamId: "omonia",
-    position: "Winger",
-    age: 31,
-    goals: 11,
-    assists: 7,
-    rating: 7.5,
+    position: "Defender",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "omonia")!
   },
   {
-    id: "charalampos-charalampous",
-    name: "Charalampos Charalampous",
+    id: "omonia-midfielder",
+    name: "Omonia squad profile",
     teamId: "omonia",
     position: "Midfielder",
-    age: 24,
-    goals: 7,
-    assists: 8,
-    rating: 7.3,
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "omonia")!
   },
   {
-    id: "loizos-loizou",
-    name: "Loizos Loizou",
-    teamId: "omonia",
-    position: "Forward",
-    age: 23,
-    goals: 8,
-    assists: 6,
-    rating: 7.2,
-    team: demoTeams.find((team) => team.id === "omonia")!
-  },
-  {
-    id: "anderson-silva",
-    name: "Anderson Silva",
+    id: "pafos-forward",
+    name: "Pafos squad profile",
     teamId: "pafos",
     position: "Forward",
-    age: 27,
-    goals: 12,
-    assists: 4,
-    rating: 7.4,
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "pafos")!
   },
   {
-    id: "domingos-quina",
-    name: "Domingos Quina",
+    id: "pafos-midfielder",
+    name: "Pafos squad profile",
     teamId: "pafos",
     position: "Midfielder",
-    age: 26,
-    goals: 7,
-    assists: 9,
-    rating: 7.3,
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "pafos")!
   },
   {
-    id: "jaden-montnor",
-    name: "Jaden Montnor",
+    id: "aris-forward",
+    name: "Aris squad profile",
     teamId: "aris",
     position: "Forward",
-    age: 25,
-    goals: 10,
-    assists: 6,
-    rating: 7.4,
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "aris")!
   },
   {
-    id: "piero-sotiriou",
-    name: "Pieros Sotiriou",
-    teamId: "apoel",
-    position: "Forward",
-    age: 33,
-    goals: 11,
-    assists: 3,
-    rating: 7.2,
-    team: demoTeams.find((team) => team.id === "apoel")!
-  },
-  {
-    id: "stefan-drazic",
-    name: "Stefan Drazic",
-    teamId: "apoel",
-    position: "Forward",
-    age: 33,
-    goals: 9,
-    assists: 4,
-    rating: 7.1,
-    team: demoTeams.find((team) => team.id === "apoel")!
-  },
-  {
-    id: "hrvoje-milicevic",
-    name: "Hrvoje Milicevic",
-    teamId: "aek-larnaca",
+    id: "aris-defender",
+    name: "Aris squad profile",
+    teamId: "aris",
     position: "Defender",
-    age: 32,
-    goals: 5,
-    assists: 3,
-    rating: 7.1,
-    team: demoTeams.find((team) => team.id === "aek-larnaca")!
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
+    team: demoTeams.find((team) => team.id === "aris")!
   },
   {
-    id: "djordje-ivanovic",
-    name: "Djordje Ivanovic",
+    id: "apoel-forward",
+    name: "APOEL squad profile",
+    teamId: "apoel",
+    position: "Forward",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
+    team: demoTeams.find((team) => team.id === "apoel")!
+  },
+  {
+    id: "aek-midfielder",
+    name: "AEK squad profile",
     teamId: "aek-larnaca",
-    position: "Forward",
-    age: 30,
-    goals: 8,
-    assists: 5,
-    rating: 7.0,
+    position: "Midfielder",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "aek-larnaca")!
   },
   {
-    id: "bagaliy-dabo",
-    name: "Bagaliy Dabo",
+    id: "apollon-defender",
+    name: "Apollon squad profile",
     teamId: "apollon",
-    position: "Forward",
-    age: 37,
-    goals: 7,
-    assists: 4,
-    rating: 6.9,
+    position: "Defender",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
     team: demoTeams.find((team) => team.id === "apollon")!
+  },
+  {
+    id: "anorthosis-goalkeeper",
+    name: "Anorthosis squad profile",
+    teamId: "anorthosis",
+    position: "Goalkeeper",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
+    team: demoTeams.find((team) => team.id === "anorthosis")!
+  },
+  {
+    id: "ael-forward",
+    name: "AEL squad profile",
+    teamId: "ael",
+    position: "Forward",
+    nationality: "Cyprus",
+    dataStatus: "Manual data",
+    team: demoTeams.find((team) => team.id === "ael")!
+  }
+];
+
+export const europeanClubCards = [
+  {
+    id: "europe-omonia",
+    teamId: "omonia",
+    competition: "UEFA Champions League",
+    stage: "Qualifying",
+    status: "Fixture to verify",
+    headline: "Omonia Nicosia vs Winner of Kairat Almaty / Sutjeska",
+    note: "European fixtures are manually maintained and should be verified before publication.",
+    team: demoTeams.find((team) => team.id === "omonia")!
+  },
+  {
+    id: "europe-pafos",
+    teamId: "pafos",
+    competition: "UEFA competition",
+    stage: "European qualifying",
+    status: "Manual entry",
+    headline: "Pafos FC European campaign tracker",
+    note: "Competition, round and opponent should be checked before publishing.",
+    team: demoTeams.find((team) => team.id === "pafos")!
+  },
+  {
+    id: "europe-aek",
+    teamId: "aek-larnaca",
+    competition: "UEFA competition",
+    stage: "European qualifying",
+    status: "Manual entry",
+    headline: "AEK Larnaca European campaign tracker",
+    note: "Competition, round and opponent should be checked before publishing.",
+    team: demoTeams.find((team) => team.id === "aek-larnaca")!
+  },
+  {
+    id: "europe-aris",
+    teamId: "aris",
+    competition: "UEFA competition",
+    stage: "European qualifying",
+    status: "Manual entry",
+    headline: "Aris Limassol European campaign tracker",
+    note: "Competition, round and opponent should be checked before publishing.",
+    team: demoTeams.find((team) => team.id === "aris")!
   }
 ];
 
@@ -523,9 +542,17 @@ export const demoNews = [
   {
     id: "news-players-watch",
     category: "Players",
-    title: "Omonia attackers lead the demo player statistics",
+    title: "Player cards switched to manual squad profiles",
     excerpt:
-      "Ryan Mmaee and Willy Semedo headline the MVP player cards with goals, assists and ratings.",
+      "The MVP now avoids unverified goals, assists and ratings, using squad-style player cards until verified data is available.",
+    time: "Yesterday"
+  },
+  {
+    id: "news-europe-tracker",
+    category: "Europe",
+    title: "Cypriot clubs in Europe tracker added",
+    excerpt:
+      "Omonia, Pafos FC, AEK Larnaca and Aris Limassol now have manually maintained European competition cards.",
     time: "Yesterday"
   }
 ];

@@ -7,6 +7,7 @@ import {
   demoSeasons,
   demoStandings,
   demoTeams,
+  europeanClubCards,
   previousChampions
 } from "@/lib/demo-data";
 
@@ -18,6 +19,7 @@ type NewsShape = (typeof demoNews)[number];
 type PlayerShape = (typeof demoPlayers)[number];
 type SeasonShape = (typeof demoSeasons)[number];
 type ChampionShape = (typeof previousChampions)[number];
+type EuropeanClubCardShape = (typeof europeanClubCards)[number];
 
 export type FootballDataset = {
   source: "manual";
@@ -30,6 +32,7 @@ export type FootballDataset = {
   seasons: SeasonShape[];
   currentSeason: SeasonShape;
   previousChampions: ChampionShape[];
+  europeanClubCards: EuropeanClubCardShape[];
 };
 
 export async function getFootballDataset(): Promise<FootballDataset> {
@@ -47,6 +50,7 @@ export function getDemoDataset(): FootballDataset {
     players: demoPlayers,
     seasons: demoSeasons,
     currentSeason,
-    previousChampions
+    previousChampions,
+    europeanClubCards
   };
 }

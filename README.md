@@ -13,9 +13,11 @@ Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
 - League Table page
 - Clubs page
 - Players page
+- Europe page
 - News page
 - Mobile-friendly dark sports-media design
-- Local manual data for teams, fixtures, results, season tables, players and news
+- Local manual data for teams, fixtures, results, season tables, squad cards,
+  European club cards and news
 - Season selector with five manually maintained league tables
 - Vercel-ready Next.js build
 
@@ -74,7 +76,8 @@ That file controls:
 - Results
 - League tables by season
 - Previous champions
-- Players
+- Squad-style player cards
+- Cypriot clubs in Europe
 - News
 
 ## Optional Supabase Later
@@ -123,6 +126,8 @@ Ready to publish:
 - Main pages are complete for the MVP.
 - 2025/26 shows Omonia Nicosia as champions in the manual standings.
 - Users can switch between five manual seasons on the League Table page.
+- Player cards avoid unverified goals, assists and ratings.
+- European fixtures are manually maintained and should be verified before publication.
 - No paid API key is required.
 - Supabase is optional.
 

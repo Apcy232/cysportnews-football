@@ -1,4 +1,4 @@
-import { Star, Target, UserRound } from "lucide-react";
+import { Flag, Shield, UserRound } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
 import { getFootballDataset } from "@/lib/data/cyprus-football";
 
@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PlayersPage() {
   const { currentSeason, players } = await getFootballDataset();
+  const clubs = new Set(players.map((player) => player.teamId)).size;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -15,8 +16,9 @@ export default async function PlayersPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Players</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Manual {currentSeason.label} player cards for the Cyprus First
-          Division MVP. Ratings and statistics are maintained locally for launch.
+          Manual {currentSeason.label} squad-style cards for the Cyprus First
+          Division MVP. Player statistics are intentionally hidden until they
+          can be verified.
         </p>
       </div>
 
@@ -24,23 +26,19 @@ export default async function PlayersPage() {
         <div className="sports-card rounded-lg p-4">
           <p className="text-2xl font-black text-white">{players.length}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Demo players
+            Squad cards
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">
-            {Math.max(...players.map((player) => player.goals))}
-          </p>
+          <p className="text-2xl font-black text-white">{clubs}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Top goals
+            Clubs covered
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">
-            {Math.max(...players.map((player) => player.rating)).toFixed(1)}
-          </p>
+          <p className="text-2xl font-black text-white">Manual</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Top rating
+            Data mode
           </p>
         </div>
       </section>
@@ -65,40 +63,25 @@ export default async function PlayersPage() {
               <UserRound className="gold-text" size={22} aria-hidden="true" />
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full bg-[#080b11] px-3 py-1 text-xs font-bold text-white">
-                {player.position}
-              </span>
-              <span className="rounded-full bg-[#080b11] px-3 py-1 text-xs font-bold text-white">
-                Age {player.age}
-              </span>
-            </div>
-
-            <dl className="mt-6 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-lg border border-[var(--line)] bg-[#080b11] p-3">
-                <dt className="inline-flex items-center gap-1 text-xs font-bold uppercase text-[var(--muted)]">
-                  <Target size={13} aria-hidden="true" />
-                  Goals
+            <dl className="mt-6 grid gap-3 text-sm">
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
+                <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                  <Shield size={15} aria-hidden="true" />
+                  Position
                 </dt>
-                <dd className="mt-1 text-2xl font-black text-white">
-                  {player.goals}
-                </dd>
+                <dd className="font-black text-white">{player.position}</dd>
               </div>
-              <div className="rounded-lg border border-[var(--line)] bg-[#080b11] p-3">
-                <dt className="text-xs font-bold uppercase text-[var(--muted)]">
-                  Assists
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
+                <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                  <Flag size={15} aria-hidden="true" />
+                  Nationality
                 </dt>
-                <dd className="mt-1 text-2xl font-black text-white">
-                  {player.assists}
-                </dd>
+                <dd className="font-black text-white">{player.nationality}</dd>
               </div>
-              <div className="rounded-lg border border-[var(--line)] bg-[#080b11] p-3">
-                <dt className="inline-flex items-center gap-1 text-xs font-bold uppercase text-[var(--muted)]">
-                  <Star size={13} aria-hidden="true" />
-                  Rating
-                </dt>
-                <dd className="mt-1 text-2xl font-black text-white">
-                  {player.rating.toFixed(1)}
+              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
+                <dt className="text-[var(--muted)]">Status</dt>
+                <dd className="font-black text-[var(--brand)]">
+                  {player.dataStatus}
                 </dd>
               </div>
             </dl>
