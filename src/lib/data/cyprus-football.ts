@@ -6,6 +6,14 @@ const CACHE_SECONDS = 60 * 20;
 const CALCULATED_2025_NOTICE =
   "Calculated from 2025/26 results — official table not yet available.";
 const NOT_STARTED_2025_NOTICE = "2025/26 season has not started yet.";
+const EUROPE_FIXTURES_UNAVAILABLE =
+  "European fixtures will appear once published by API-Football.";
+const CYPRIOT_EUROPE_CLUBS = [
+  { id: "omonia", name: "Omonia Nicosia", matchers: ["omonia"] },
+  { id: "pafos", name: "Pafos FC", matchers: ["pafos"] },
+  { id: "aek-larnaca", name: "AEK Larnaca", matchers: ["aek larnaca"] },
+  { id: "aris-limassol", name: "Aris Limassol", matchers: ["aris"] }
+];
 
 export type FootballTeam = {
   id: string;
@@ -88,6 +96,7 @@ export type EuropeanClubCard = {
   status: string;
   headline: string;
   note: string;
+  hasFixture: boolean;
   team: FootballTeam;
 };
 
@@ -423,14 +432,23 @@ async function getEuropeanFixtures(
   season: number,
   apiKey: string
 ): Promise<EuropeanClubCard[]> {
-  const europeanTeams = teams.filter((team) =>
-    ["omonia", "pafos", "aek larnaca", "aris"].some((name) =>
-      team.name.toLowerCase().includes(name)
-    )
-  );
+  const europeanTeams = CYPRIOT_EUROPE_CLUBS.map((club) => {
+    const apiTeam = teams.find((team) =>
+      club.matchers.some((name) => team.name.toLowerCase().includes(name))
+    );
+
+    return {
+      club,
+      team: apiTeam ?? fallbackEuropeanTeam(club.id, club.name)
+    };
+  });
   const fixtureResponses = await Promise.all(
-    europeanTeams.map((team) =>
-      apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { team: team.id, season, next: 15 }, apiKey).catch(
+    europeanTeams.map(({ team }) => {
+      if (team.id.startsWith("fallback-")) {
+        return Promise.resolve([]);
+      }
+
+      return apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { team: team.id, season, next: 15 }, apiKey).catch(
         (error) => {
           console.error("Could not load API-Football European fixtures", {
             teamId: team.id,
@@ -441,30 +459,44 @@ async function getEuropeanFixtures(
 
           return [];
         }
-      )
-    )
+      );
+    })
   );
 
-  return europeanTeams.flatMap((team, index) =>
-    fixtureResponses[index]
-      .filter((fixture) => isEuropeanFixture(fixture.league?.name))
-      .slice(0, 2)
-      .map((fixture) => {
-        const homeTeam = teamFromApi(fixture.teams?.home);
-        const awayTeam = teamFromApi(fixture.teams?.away);
+  return europeanTeams.map(({ club, team }, index) => {
+    const fixture = fixtureResponses[index].find((item) =>
+      isEuropeanFixture(item.league?.name)
+    );
 
-        return {
-          id: String(fixture.fixture?.id ?? `${team.id}-${fixture.league?.round ?? "europe"}`),
-          teamId: team.id,
-          competition: fixture.league?.name ?? "European competition",
-          stage: fixture.league?.round ?? "Upcoming fixture",
-          status: fixture.fixture?.status?.long ?? "Scheduled",
-          headline: `${homeTeam.name} vs ${awayTeam.name}`,
-          note: `${formatDate(fixture.fixture?.date)} at ${formatTime(fixture.fixture?.date)}`,
-          team
-        };
-      })
-  );
+    if (!fixture) {
+      return {
+        id: `europe-${club.id}`,
+        teamId: team.id,
+        competition: "European competition",
+        stage: "Fixture pending",
+        status: "Awaiting publication",
+        headline: `${team.name} European fixtures`,
+        note: EUROPE_FIXTURES_UNAVAILABLE,
+        hasFixture: false,
+        team
+      };
+    }
+
+    const homeTeam = teamFromApi(fixture.teams?.home);
+    const awayTeam = teamFromApi(fixture.teams?.away);
+
+    return {
+      id: String(fixture.fixture?.id ?? `${team.id}-${fixture.league?.round ?? "europe"}`),
+      teamId: team.id,
+      competition: fixture.league?.name ?? "European competition",
+      stage: fixture.league?.round ?? "Upcoming fixture",
+      status: fixture.fixture?.status?.long ?? "Scheduled",
+      headline: `${homeTeam.name} vs ${awayTeam.name}`,
+      note: `${formatDate(fixture.fixture?.date)} at ${formatTime(fixture.fixture?.date)}`,
+      hasFixture: true,
+      team
+    };
+  });
 }
 
 function mapApiTeams(response: ApiTeamsResponse[]) {
@@ -706,6 +738,19 @@ function teamFromApi(team?: ApiTeam, venue?: ApiVenue): FootballTeam {
     form: [],
     primaryColor: "#d6ad52",
     logo: team?.logo
+  };
+}
+
+function fallbackEuropeanTeam(id: string, name: string): FootballTeam {
+  return {
+    id: `fallback-${id}`,
+    name,
+    shortName: shortenTeamName(name),
+    city: "Cyprus",
+    venue: "Venue TBC",
+    founded: 0,
+    form: [],
+    primaryColor: "#d6ad52"
   };
 }
 

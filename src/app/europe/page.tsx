@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function EuropePage() {
   const { europeanClubCards } = await getFootballDataset();
+  const publishedFixtures = europeanClubCards.filter((card) => card.hasFixture);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -32,9 +33,11 @@ export default async function EuropePage() {
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">Live</p>
+          <p className="text-2xl font-black text-white">
+            {publishedFixtures.length}
+          </p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Data mode
+            Fixtures listed
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
@@ -49,8 +52,9 @@ export default async function EuropePage() {
         <div className="flex items-start gap-3">
           <AlertCircle className="gold-text mt-0.5" size={20} aria-hidden="true" />
           <p className="text-sm font-bold leading-6 text-white">
-            European fixtures appear here when API-Football lists upcoming UEFA
-            matches for Cypriot clubs.
+            {publishedFixtures.length > 0
+              ? "European fixtures are loaded from API-Football when available."
+              : "European fixtures will appear once published by API-Football."}
           </p>
         </div>
       </section>

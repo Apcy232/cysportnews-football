@@ -10,7 +10,7 @@ const navItems = [
   { href: "/results", label: "Results" },
   { href: "/table", label: "Table" },
   { href: "/clubs", label: "Clubs" },
-  { href: "/players", label: "Players" },
+  { href: "/players", label: "Players & Scorers" },
   { href: "/europe", label: "Europe" },
   { href: "/matches", label: "Matches" },
   { href: "/news", label: "News" }

@@ -1,11 +1,21 @@
 import { Flag, Shield, UserRound } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { SeasonSelector } from "@/components/season-selector";
+import { getFootballDataset, normalizeSeason } from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-export default async function PlayersPage() {
-  const { currentSeason, players, topScorers } = await getFootballDataset();
+type PlayersPageProps = {
+  searchParams?: Promise<{
+    season?: string;
+  }>;
+};
+
+export default async function PlayersPage({ searchParams }: PlayersPageProps) {
+  const params = await searchParams;
+  const requestedSeason = normalizeSeason(Number(params?.season ?? 2024));
+  const data = await getFootballDataset({ season: requestedSeason });
+  const { currentSeason, players, seasons, topScorers } = data;
   const clubs = new Set(players.map((player) => player.teamId)).size;
 
   return (
@@ -14,12 +24,21 @@ export default async function PlayersPage() {
         <p className="text-sm font-bold uppercase text-[var(--brand)]">
           CYsportnews Football
         </p>
-        <h1 className="text-4xl font-black text-white">Players</h1>
+        <h1 className="text-4xl font-black text-white">
+          Players &amp; Top Scorers
+        </h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
           Live {currentSeason.label} squad cards and top scorers from
           API-Football.
         </p>
       </div>
+
+      <SeasonSelector
+        basePath="/players"
+        notice={data.seasonNotice}
+        selectedSeason={data.requestedSeason}
+        seasons={seasons}
+      />
 
       <section className="mt-6 grid gap-3 sm:grid-cols-3">
         <div className="sports-card rounded-lg p-4">
@@ -72,7 +91,16 @@ export default async function PlayersPage() {
             ))}
           </div>
         </section>
-      ) : null}
+      ) : (
+        <section className="sports-card mt-8 rounded-lg p-8 text-center">
+          <p className="text-lg font-black text-white">
+            Live top scorers unavailable
+          </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            API-Football did not return top scorer data for this season.
+          </p>
+        </section>
+      )}
 
       {players.length > 0 ? (
         <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

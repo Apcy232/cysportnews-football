@@ -216,8 +216,7 @@ export default async function Home() {
               href="/europe"
             />
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-              Upcoming European fixtures appear when API-Football lists UEFA
-              matches for Cypriot clubs.
+              European fixtures will appear once published by API-Football.
             </p>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {data.europeanClubCards.slice(0, 4).map((card) => (
