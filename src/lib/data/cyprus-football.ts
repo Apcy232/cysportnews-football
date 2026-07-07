@@ -1,7 +1,10 @@
 const API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io";
 const CYPRUS_FIRST_DIVISION_LEAGUE_ID = 318;
 export const CYPRUS_FIRST_DIVISION_SEASON = 2025;
+export const API_FOOTBALL_SEASONS = [2025, 2024, 2023, 2022, 2021];
 const CACHE_SECONDS = 60 * 20;
+const EMPTY_2025_NOTICE =
+  "2025/26 data is not available yet from API-Football. Showing latest available season.";
 
 export type FootballTeam = {
   id: string;
@@ -98,6 +101,8 @@ export type FootballNewsItem = {
 export type FootballDataset = {
   source: "api-football";
   season: number;
+  requestedSeason: number;
+  seasonNotice?: string;
   teams: FootballTeam[];
   fixtures: FootballFixture[];
   results: FootballResult[];
@@ -114,6 +119,9 @@ export type FootballDataset = {
 
 type DatasetOptions = {
   season?: number;
+  requestedSeason?: number;
+  seasonNotice?: string;
+  allowFallback?: boolean;
 };
 
 type ApiResponse<T> = {
@@ -220,20 +228,20 @@ type FixtureStatus = "upcoming" | "finished" | "all";
 export async function getFootballDataset(
   options: DatasetOptions = {}
 ): Promise<FootballDataset> {
-  const season = options.season ?? getDefaultSeason();
+  const season = normalizeSeason(options.season ?? getDefaultSeason());
+  const requestedSeason = normalizeSeason(options.requestedSeason ?? season);
   const apiKey = process.env.API_FOOTBALL_KEY;
 
   if (!apiKey) {
-    return emptyDataset(season, false);
+    return emptyDataset(season, false, requestedSeason, options.seasonNotice);
   }
 
   try {
-    const [teamsResponse, standingsResponse, fixturesResponse, resultsResponse, playersResponse, topScorersResponse] =
+    const [teamsResponse, standingsResponse, fixturesResponse, playersResponse, topScorersResponse] =
       await Promise.all([
         apiFootballFetch<ApiTeamsResponse[]>("/teams", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season }, apiKey),
         apiFootballFetch<ApiStandingsResponse[]>("/standings", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season }, apiKey),
-        apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season, next: 12 }, apiKey),
-        apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season, last: 12 }, apiKey),
+        apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season }, apiKey),
         apiFootballFetch<ApiTopScorerResponse[]>("/players", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season, page: 1 }, apiKey),
         apiFootballFetch<ApiTopScorerResponse[]>("/players/topscorers", { league: CYPRUS_FIRST_DIVISION_LEAGUE_ID, season }, apiKey)
       ]);
@@ -241,13 +249,26 @@ export async function getFootballDataset(
     const teams = mergeTeams([
       ...mapApiTeams(teamsResponse),
       ...extractTeamsFromStandings(standingsResponse),
-      ...extractTeamsFromFixtures(fixturesResponse),
-      ...extractTeamsFromFixtures(resultsResponse)
+      ...extractTeamsFromFixtures(fixturesResponse)
     ]);
     const teamMap = new Map(teams.map((team) => [team.id, team]));
     const standings = mapStandings(standingsResponse, teamMap);
     const fixtures = mapFixtures(fixturesResponse, teamMap, "upcoming");
-    const results = mapFixtures(resultsResponse, teamMap, "finished") as FootballResult[];
+    const results = mapFixtures(fixturesResponse, teamMap, "finished") as FootballResult[];
+
+    if (
+      season === 2025 &&
+      options.allowFallback !== false &&
+      isSeasonEmpty({ standings, fixtures, results })
+    ) {
+      return getFootballDataset({
+        season: 2024,
+        requestedSeason,
+        seasonNotice: EMPTY_2025_NOTICE,
+        allowFallback: false
+      });
+    }
+
     const topScorers = mapTopScorers(topScorersResponse);
     const squadPlayers = await getSquadPlayers(teams, apiKey);
     const players = mergePlayers([...mapLeaguePlayers(playersResponse, teamMap), ...squadPlayers]);
@@ -263,6 +284,8 @@ export async function getFootballDataset(
     return {
       source: "api-football",
       season,
+      requestedSeason,
+      seasonNotice: options.seasonNotice,
       teams,
       fixtures,
       results,
@@ -291,14 +314,14 @@ export async function getFootballDataset(
       error
     });
 
-    return emptyDataset(season, true);
+    return emptyDataset(season, true, requestedSeason, options.seasonNotice);
   }
 }
 
 export function getDefaultSeason() {
   const configuredSeason = Number(process.env.API_FOOTBALL_SEASON);
 
-  if (Number.isInteger(configuredSeason) && configuredSeason > 2000) {
+  if (API_FOOTBALL_SEASONS.includes(configuredSeason)) {
     return configuredSeason;
   }
 
@@ -306,7 +329,15 @@ export function getDefaultSeason() {
 }
 
 export function buildSeasonOptions(selectedSeason = getDefaultSeason()) {
-  return Array.from({ length: 5 }, (_, index) => selectedSeason - index);
+  void selectedSeason;
+
+  return API_FOOTBALL_SEASONS;
+}
+
+export function normalizeSeason(season: number) {
+  return API_FOOTBALL_SEASONS.includes(season)
+    ? season
+    : CYPRUS_FIRST_DIVISION_SEASON;
 }
 
 async function apiFootballFetch<T>(
@@ -667,17 +698,26 @@ function buildLiveNews(
   ].filter((item): item is FootballNewsItem => Boolean(item));
 }
 
-function emptyDataset(season: number, hasApiKey: boolean): FootballDataset {
+function emptyDataset(
+  season: number,
+  hasApiKey: boolean,
+  requestedSeason = season,
+  seasonNotice?: string
+): FootballDataset {
   const currentSeason = {
     id: String(season),
     label: formatSeasonLabel(season),
-    note: "Add API_FOOTBALL_KEY to load live API-Football data.",
+    note: hasApiKey
+      ? "API-Football did not return data for this season."
+      : "Add API_FOOTBALL_KEY to load live API-Football data.",
     standings: []
   };
 
   return {
     source: "api-football",
     season,
+    requestedSeason,
+    seasonNotice,
     teams: [],
     fixtures: [],
     results: [],
@@ -691,6 +731,18 @@ function emptyDataset(season: number, hasApiKey: boolean): FootballDataset {
     europeanClubCards: [],
     hasApiKey
   };
+}
+
+function isSeasonEmpty({
+  standings,
+  fixtures,
+  results
+}: {
+  standings: FootballStanding[];
+  fixtures: FootballFixture[];
+  results: FootballResult[];
+}) {
+  return standings.length === 0 && fixtures.length === 0 && results.length === 0;
 }
 
 function isFinishedFixture(status?: string) {

@@ -18,6 +18,7 @@ JavaScript.
 - News-style homepage cards generated from live football data
 - Mobile-friendly dark sports-media design
 - Secure server-side API routes under `/api/football`
+- Season selectors for league table, fixtures, results and clubs
 - 20-minute response caching to reduce API-Football usage
 - Vercel-ready Next.js build
 
@@ -28,6 +29,18 @@ JavaScript.
 - League: Cyprus First Division
 - League ID: `318`
 - Default season: automatically calculated, or set with `API_FOOTBALL_SEASON`
+
+Season mapping:
+
+- `2025/26` uses API season `2025`
+- `2024/25` uses API season `2024`
+- `2023/24` uses API season `2023`
+- `2022/23` uses API season `2022`
+- `2021/22` uses API season `2021`
+
+If API-Football has not published 2025/26 standings, fixtures or results yet,
+the site displays a clear notice and automatically shows the latest available
+season, currently 2024/25.
 
 The app fetches:
 

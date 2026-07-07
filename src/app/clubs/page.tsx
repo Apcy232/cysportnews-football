@@ -1,11 +1,27 @@
 import { Building2, MapPin, Shield } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { SeasonSelector } from "@/components/season-selector";
+import {
+  CYPRUS_FIRST_DIVISION_SEASON,
+  getFootballDataset,
+  normalizeSeason
+} from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-export default async function ClubsPage() {
-  const { currentSeason, standings, teams } = await getFootballDataset();
+type ClubsPageProps = {
+  searchParams?: Promise<{
+    season?: string;
+  }>;
+};
+
+export default async function ClubsPage({ searchParams }: ClubsPageProps) {
+  const params = await searchParams;
+  const requestedSeason = normalizeSeason(
+    Number(params?.season ?? CYPRUS_FIRST_DIVISION_SEASON)
+  );
+  const data = await getFootballDataset({ season: requestedSeason });
+  const { currentSeason, seasons, standings, teams } = data;
   const cities = new Set(teams.map((team) => team.city)).size;
 
   return (
@@ -20,6 +36,13 @@ export default async function ClubsPage() {
           {currentSeason.label}, loaded from API-Football.
         </p>
       </div>
+
+      <SeasonSelector
+        basePath="/clubs"
+        notice={data.seasonNotice}
+        selectedSeason={data.requestedSeason}
+        seasons={seasons}
+      />
 
       <section className="mt-6 grid gap-3 sm:grid-cols-3">
         <div className="sports-card rounded-lg p-4">
@@ -43,7 +66,7 @@ export default async function ClubsPage() {
       </section>
 
       <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {teams.map((team) => {
+        {teams.length > 0 ? teams.map((team) => {
           const tableRow = standings.find((row) => row.teamId === team.id);
 
           return (
@@ -100,7 +123,14 @@ export default async function ClubsPage() {
               </div>
             </article>
           );
-        })}
+        }) : (
+          <div className="sports-card rounded-lg p-8 text-center sm:col-span-2 lg:col-span-3">
+            <p className="text-lg font-black text-white">No clubs available</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              API-Football did not return club data for this season.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

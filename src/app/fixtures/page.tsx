@@ -1,11 +1,27 @@
 import { CalendarDays, Clock, MapPin } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { SeasonSelector } from "@/components/season-selector";
+import {
+  CYPRUS_FIRST_DIVISION_SEASON,
+  getFootballDataset,
+  normalizeSeason
+} from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-export default async function FixturesPage() {
-  const { fixtures } = await getFootballDataset();
+type FixturesPageProps = {
+  searchParams?: Promise<{
+    season?: string;
+  }>;
+};
+
+export default async function FixturesPage({ searchParams }: FixturesPageProps) {
+  const params = await searchParams;
+  const requestedSeason = normalizeSeason(
+    Number(params?.season ?? CYPRUS_FIRST_DIVISION_SEASON)
+  );
+  const data = await getFootballDataset({ season: requestedSeason });
+  const { currentSeason, fixtures, seasons } = data;
   const venues = new Set(fixtures.map((fixture) => fixture.venue)).size;
 
   return (
@@ -16,9 +32,17 @@ export default async function FixturesPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Fixtures</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Cyprus First Division fixtures loaded server-side from API-Football.
+          Cyprus First Division fixtures for {currentSeason.label}, loaded
+          server-side from API-Football.
         </p>
       </div>
+
+      <SeasonSelector
+        basePath="/fixtures"
+        notice={data.seasonNotice}
+        selectedSeason={data.requestedSeason}
+        seasons={seasons}
+      />
 
       <section className="mt-6 grid gap-3 sm:grid-cols-3">
         <div className="sports-card rounded-lg p-4">
@@ -42,7 +66,7 @@ export default async function FixturesPage() {
       </section>
 
       <section className="mt-8 grid gap-4">
-        {fixtures.map((fixture) => (
+        {fixtures.length > 0 ? fixtures.map((fixture) => (
           <article
             className="sports-card animate-lift rounded-lg p-5"
             key={fixture.id}
@@ -96,7 +120,16 @@ export default async function FixturesPage() {
               </span>
             </div>
           </article>
-        ))}
+        )) : (
+          <div className="sports-card rounded-lg p-8 text-center">
+            <p className="text-lg font-black text-white">
+              No fixtures available
+            </p>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              API-Football did not return upcoming fixtures for this season.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

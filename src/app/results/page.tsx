@@ -1,11 +1,27 @@
 import { CircleDot, MapPin } from "lucide-react";
 import { ClubBadge } from "@/components/club-badge";
-import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { SeasonSelector } from "@/components/season-selector";
+import {
+  CYPRUS_FIRST_DIVISION_SEASON,
+  getFootballDataset,
+  normalizeSeason
+} from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-export default async function ResultsPage() {
-  const { results } = await getFootballDataset();
+type ResultsPageProps = {
+  searchParams?: Promise<{
+    season?: string;
+  }>;
+};
+
+export default async function ResultsPage({ searchParams }: ResultsPageProps) {
+  const params = await searchParams;
+  const requestedSeason = normalizeSeason(
+    Number(params?.season ?? CYPRUS_FIRST_DIVISION_SEASON)
+  );
+  const data = await getFootballDataset({ season: requestedSeason });
+  const { currentSeason, results, seasons } = data;
   const goals = results.reduce(
     (total, result) => total + result.homeScore + result.awayScore,
     0
@@ -19,10 +35,17 @@ export default async function ResultsPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Results</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Recent Cyprus First Division results loaded server-side from
-          API-Football.
+          Cyprus First Division results for {currentSeason.label}, loaded
+          server-side from API-Football.
         </p>
       </div>
+
+      <SeasonSelector
+        basePath="/results"
+        notice={data.seasonNotice}
+        selectedSeason={data.requestedSeason}
+        seasons={seasons}
+      />
 
       <section className="mt-6 grid gap-3 sm:grid-cols-3">
         <div className="sports-card rounded-lg p-4">
@@ -46,7 +69,7 @@ export default async function ResultsPage() {
       </section>
 
       <section className="mt-8 grid gap-4">
-        {results.map((result) => (
+        {results.length > 0 ? results.map((result) => (
           <article className="sports-card rounded-lg p-5" key={result.id}>
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-4">
               <p className="inline-flex items-center gap-2 text-sm font-bold text-[var(--brand)]">
@@ -85,7 +108,14 @@ export default async function ResultsPage() {
               {result.venue}
             </p>
           </article>
-        ))}
+        )) : (
+          <div className="sports-card rounded-lg p-8 text-center">
+            <p className="text-lg font-black text-white">No results available</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              API-Football did not return finished matches for this season.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

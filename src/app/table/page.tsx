@@ -1,22 +1,31 @@
 import { Trophy } from "lucide-react";
-import Link from "next/link";
 import { ClubBadge } from "@/components/club-badge";
+import { SeasonSelector } from "@/components/season-selector";
 import {
   CYPRUS_FIRST_DIVISION_SEASON,
-  getFootballDataset
+  getFootballDataset,
+  normalizeSeason
 } from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-export default async function TablePage() {
-  const season = CYPRUS_FIRST_DIVISION_SEASON;
-  const { seasons, previousChampions } = await getFootballDataset({ season });
-  const selectedSeason =
-    seasons.find((item) => item.id === String(season)) ?? seasons[0];
-  const standings = selectedSeason.standings;
+type TablePageProps = {
+  searchParams?: Promise<{
+    season?: string;
+  }>;
+};
+
+export default async function TablePage({ searchParams }: TablePageProps) {
+  const params = await searchParams;
+  const requestedSeason = normalizeSeason(
+    Number(params?.season ?? CYPRUS_FIRST_DIVISION_SEASON)
+  );
+  const data = await getFootballDataset({ season: requestedSeason });
+  const { currentSeason, previousChampions, seasons } = data;
+  const standings = data.standings;
   const leader = standings[0];
   const champion = previousChampions.find(
-    (item) => item.seasonId === selectedSeason.id
+    (item) => item.seasonId === currentSeason.id
   )?.champion;
 
   return (
@@ -30,7 +39,7 @@ export default async function TablePage() {
             <h1 className="text-4xl font-black text-white">League Table</h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--muted)]">
               Live Cyprus First Division standings from API-Football for League
-              ID 318, season 2025.
+              ID 318.
             </p>
           </div>
           <div className="rounded-lg border border-[var(--line)] bg-[#080b11] px-4 py-3">
@@ -44,36 +53,18 @@ export default async function TablePage() {
         </div>
       </div>
 
-      <section className="mt-6">
-        <div className="flex flex-wrap gap-2">
-          {seasons.map((season) => {
-            const isActive = season.id === selectedSeason.id;
-
-            return (
-              <Link
-                className={`rounded-full border px-4 py-2 text-sm font-black transition ${
-                  isActive
-                    ? "border-[var(--brand)] bg-[var(--brand)] text-[#080b11]"
-                    : "border-[var(--line)] bg-[#10141d] text-white hover:border-[var(--brand)] hover:text-[var(--brand)]"
-                }`}
-                href={`/table?season=${season.id}`}
-                key={season.id}
-              >
-                {season.label}
-              </Link>
-            );
-          })}
-        </div>
-        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-          {selectedSeason.note}
-        </p>
-      </section>
+      <SeasonSelector
+        basePath="/table"
+        notice={data.seasonNotice}
+        selectedSeason={data.requestedSeason}
+        seasons={seasons}
+      />
 
       <section className="mt-6 grid gap-3 sm:grid-cols-3">
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">{selectedSeason.label}</p>
+          <p className="text-2xl font-black text-white">{currentSeason.label}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Selected season
+            Loaded season
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
@@ -97,7 +88,7 @@ export default async function TablePage() {
           <div className="flex items-center gap-3">
             <Trophy className="gold-text" size={22} aria-hidden="true" />
             <h2 className="text-xl font-black text-white">
-              {selectedSeason.label} Standings
+              {currentSeason.label} Standings
             </h2>
           </div>
           <span className="rounded-full border border-[var(--brand)] px-3 py-1 text-xs font-black uppercase text-[var(--brand)]">
@@ -122,7 +113,7 @@ export default async function TablePage() {
             </thead>
             <tbody>
               {standings.map((row, index) => {
-                const isChampion = row.teamId === selectedSeason.championTeamId;
+                const isChampion = row.teamId === currentSeason.championTeamId;
 
                 return (
                   <tr
