@@ -16,7 +16,7 @@ export default async function FixturesPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Fixtures</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Cyprus First Division fixtures powered by local manual MVP data.
+          Cyprus First Division fixtures loaded server-side from API-Football.
         </p>
       </div>
 
@@ -34,7 +34,7 @@ export default async function FixturesPage() {
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">Manual</p>
+          <p className="text-2xl font-black text-white">Live</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
             Data mode
           </p>

@@ -17,8 +17,7 @@ export default async function ClubsPage() {
         <h1 className="text-4xl font-black text-white">Clubs</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
           Current-season Cyprus First Division club profiles for{" "}
-          {currentSeason.label}. Data is manually maintained for now, with
-          promoted and relegated teams reflected as best as possible.
+          {currentSeason.label}, loaded from API-Football.
         </p>
       </div>
 
@@ -38,7 +37,7 @@ export default async function ClubsPage() {
         <div className="sports-card rounded-lg p-4">
           <p className="text-2xl font-black text-white">{currentSeason.label}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Manual season
+            API season
           </p>
         </div>
       </section>

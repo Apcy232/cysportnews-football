@@ -17,9 +17,8 @@ export default async function EuropePage() {
           Cypriot Clubs in Europe
         </h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Manual European competition tracker for Cypriot clubs. European
-          fixtures are manually maintained and should be verified before
-          publication.
+          Upcoming European competition fixtures for Cypriot clubs, loaded
+          server-side from API-Football when available.
         </p>
       </div>
 
@@ -33,7 +32,7 @@ export default async function EuropePage() {
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">Manual</p>
+          <p className="text-2xl font-black text-white">Live</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
             Data mode
           </p>
@@ -50,8 +49,8 @@ export default async function EuropePage() {
         <div className="flex items-start gap-3">
           <AlertCircle className="gold-text mt-0.5" size={20} aria-hidden="true" />
           <p className="text-sm font-bold leading-6 text-white">
-            European fixtures are manually maintained and should be verified
-            before publication.
+            European fixtures appear here when API-Football lists upcoming UEFA
+            matches for Cypriot clubs.
           </p>
         </div>
       </section>

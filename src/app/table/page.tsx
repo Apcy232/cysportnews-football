@@ -1,7 +1,7 @@
 import { Trophy } from "lucide-react";
 import Link from "next/link";
 import { ClubBadge } from "@/components/club-badge";
-import { getFootballDataset } from "@/lib/data/cyprus-football";
+import { getDefaultSeason, getFootballDataset } from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +13,14 @@ type TablePageProps = {
 
 export default async function TablePage({ searchParams }: TablePageProps) {
   const params = await searchParams;
-  const { seasons, previousChampions } = await getFootballDataset();
+  const requestedSeason = Number(params?.season);
+  const season =
+    Number.isInteger(requestedSeason) && requestedSeason > 2000
+      ? requestedSeason
+      : getDefaultSeason();
+  const { seasons, previousChampions } = await getFootballDataset({ season });
   const selectedSeason =
-    seasons.find((season) => season.id === params?.season) ?? seasons[0];
+    seasons.find((item) => item.id === String(season)) ?? seasons[0];
   const standings = selectedSeason.standings;
   const leader = standings[0];
   const champion = previousChampions.find(
@@ -32,8 +37,8 @@ export default async function TablePage({ searchParams }: TablePageProps) {
           <div>
             <h1 className="text-4xl font-black text-white">League Table</h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--muted)]">
-              Manual Cyprus First Division standings by season. Data is
-              manually maintained for now and reviewed before each MVP update.
+              Live Cyprus First Division standings from API-Football for League
+              ID 318.
             </p>
           </div>
           <div className="rounded-lg border border-[var(--line)] bg-[#080b11] px-4 py-3">
@@ -104,7 +109,7 @@ export default async function TablePage({ searchParams }: TablePageProps) {
             </h2>
           </div>
           <span className="rounded-full border border-[var(--brand)] px-3 py-1 text-xs font-black uppercase text-[var(--brand)]">
-            Manual data
+            API-Football
           </span>
         </div>
         <div className="overflow-x-auto">

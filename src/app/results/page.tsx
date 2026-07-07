@@ -19,7 +19,8 @@ export default async function ResultsPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Results</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Recent Cyprus First Division results powered by local manual MVP data.
+          Recent Cyprus First Division results loaded server-side from
+          API-Football.
         </p>
       </div>
 

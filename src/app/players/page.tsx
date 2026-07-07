@@ -5,7 +5,7 @@ import { getFootballDataset } from "@/lib/data/cyprus-football";
 export const dynamic = "force-dynamic";
 
 export default async function PlayersPage() {
-  const { currentSeason, players } = await getFootballDataset();
+  const { currentSeason, players, topScorers } = await getFootballDataset();
   const clubs = new Set(players.map((player) => player.teamId)).size;
 
   return (
@@ -16,9 +16,8 @@ export default async function PlayersPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Players</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Manual {currentSeason.label} squad-style cards for the Cyprus First
-          Division MVP. Player statistics are intentionally hidden until they
-          can be verified.
+          Live {currentSeason.label} squad cards and top scorers from
+          API-Football.
         </p>
       </div>
 
@@ -36,10 +35,40 @@ export default async function PlayersPage() {
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">Manual</p>
+          <p className="text-2xl font-black text-white">{topScorers.length}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Data mode
+            Top scorers
           </p>
+        </div>
+      </section>
+
+      <section className="sports-card mt-8 rounded-lg p-5">
+        <div className="flex items-center gap-3">
+          <Shield className="gold-text" size={20} aria-hidden="true" />
+          <h2 className="text-2xl font-black text-white">Top Scorers</h2>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
+          {topScorers.slice(0, 8).map((player) => (
+            <div
+              className="grid grid-cols-[1fr_auto] gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
+              key={player.id}
+            >
+              <div>
+                <p className="font-black text-white">{player.name}</p>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  {player.teamName}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-black text-[var(--brand)]">
+                  {player.goals}
+                </p>
+                <p className="text-xs font-bold uppercase text-[var(--muted)]">
+                  Goals
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

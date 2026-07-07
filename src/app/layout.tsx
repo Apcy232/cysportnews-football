@@ -50,7 +50,7 @@ export default function RootLayout({
                 <Radio size={14} className="gold-text" aria-hidden="true" />
                 Cypriot football coverage, built for launch
               </span>
-              <span className="hidden sm:inline">Manual MVP data mode</span>
+              <span className="hidden sm:inline">Live API-Football data</span>
             </div>
           </div>
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">

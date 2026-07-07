@@ -45,8 +45,8 @@ export default async function Home() {
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--muted)]">
               Fixtures, results, standings, clubs, players and sharp football
-              news for the Cyprus First Division, built as a fast manual-data
-              MVP that is ready to publish.
+              news for the Cyprus First Division, powered by live API-Football
+              data.
             </p>
             <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 rounded-lg border border-[var(--line)] bg-[#080b11]/70 p-3 text-center">
               <div>
@@ -216,8 +216,8 @@ export default async function Home() {
               href="/europe"
             />
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-              European fixtures are manually maintained and should be verified
-              before publication.
+              Upcoming European fixtures appear when API-Football lists UEFA
+              matches for Cypriot clubs.
             </p>
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {data.europeanClubCards.slice(0, 4).map((card) => (

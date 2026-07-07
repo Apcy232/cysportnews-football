@@ -14,8 +14,8 @@ export default async function NewsPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Football News</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Demo editorial coverage for the MVP. Later this section can combine
-          original stories with curated football updates.
+          Live football update cards generated from API-Football standings,
+          fixtures, results and European fixtures.
         </p>
       </div>
 

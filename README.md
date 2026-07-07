@@ -1,9 +1,10 @@
 # CYsportnews Football
 
-Production-ready MVP website for Cypriot football news and league coverage.
+Production-ready Cypriot football website powered by live API-Football data.
 
-The launch version uses **local manual data**. It does not require API-Football,
-Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
+The site uses API-Football v3 for Cyprus First Division coverage. The API key is
+read only on the server from `API_FOOTBALL_KEY` and is never exposed to browser
+JavaScript.
 
 ## What Works Now
 
@@ -12,34 +13,50 @@ Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
 - Results page
 - League Table page
 - Clubs page
-- Players page
-- Europe page
-- News page
+- Players page with squads and top scorers
+- Europe page for upcoming UEFA fixtures involving Cypriot clubs
+- News-style homepage cards generated from live football data
 - Mobile-friendly dark sports-media design
-- Local manual data for teams, fixtures, results, season tables, squad cards,
-  European club cards and news
-- Season selector with five manually maintained league tables
+- Secure server-side API routes under `/api/football`
+- 20-minute response caching to reduce API-Football usage
 - Vercel-ready Next.js build
 
-## What This Project Uses
+## Data Source
 
-- **Next.js** for the website.
-- **TypeScript** to catch mistakes early.
-- **Tailwind CSS** for styling.
-- **Supabase** as a future database option.
-- **Vercel** for deployment.
+- Provider: API-Football v3
+- Base URL: `https://v3.football.api-sports.io`
+- League: Cyprus First Division
+- League ID: `318`
+- Default season: automatically calculated, or set with `API_FOOTBALL_SEASON`
 
-No web scraping and no paid football API are used in the MVP.
+The app fetches:
 
-## Folder Guide
+- Standings
+- Fixtures
+- Results
+- Teams
+- Team squads
+- Players
+- Top scorers
+- Upcoming European fixtures for Cypriot clubs when API-Football lists them
 
-- `src/app` contains website pages and global layout.
-- `src/components` contains reusable interface pieces.
-- `src/lib/demo-data.ts` contains the manual MVP data.
-- `src/lib/data/cyprus-football.ts` exposes the manual dataset to the pages.
-- `src/lib/supabase` contains optional Supabase client helpers.
-- `supabase/migrations` contains the optional database blueprint for later.
-- `.env.example` lists optional environment variables.
+## Environment Variables
+
+Local `.env.local`:
+
+```bash
+API_FOOTBALL_KEY=<my key>
+API_FOOTBALL_SEASON=2025
+```
+
+Vercel Environment Variable:
+
+```bash
+API_FOOTBALL_KEY=<my key>
+```
+
+`API_FOOTBALL_SEASON` is optional. Use it when you want to force a specific API
+season, such as `2025`.
 
 ## Local Development
 
@@ -61,77 +78,23 @@ Open:
 http://localhost:3000
 ```
 
-## Manual Data
+## Verification
 
-Edit this file to update the MVP manually:
-
-```text
-src/lib/demo-data.ts
-```
-
-That file controls:
-
-- Teams
-- Fixtures
-- Results
-- League tables by season
-- Previous champions
-- Squad-style player cards
-- Cypriot clubs in Europe
-- News
-
-## Optional Supabase Later
-
-The site works without Supabase.
-
-If you later want to connect Supabase, create `.env.local`:
+Run:
 
 ```bash
-cp .env.example .env.local
+pnpm run typecheck
+pnpm run lint
+pnpm run build
 ```
-
-Then fill:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-```
-
-The published MVP does not read from Supabase yet. Those values are only for a
-future database-backed version.
 
 ## Vercel Deployment
 
-This MVP can be deployed without environment variables.
-
-Use:
-
-```bash
-pnpm build
-```
-
-Then deploy the repository to Vercel. The default Vercel settings for Next.js
-are enough:
+1. Connect the GitHub repository to Vercel.
+2. Add `API_FOOTBALL_KEY` in Vercel Project Settings → Environment Variables.
+3. Deploy with the default Next.js settings:
 
 - Framework preset: Next.js
 - Install command: `pnpm install`
 - Build command: `pnpm build`
 - Output directory: leave default
-
-## MVP Status
-
-Ready to publish:
-
-- Manual-data website works locally and in production builds.
-- Main pages are complete for the MVP.
-- 2025/26 shows Omonia Nicosia as champions in the manual standings.
-- Users can switch between five manual seasons on the League Table page.
-- Player cards avoid unverified goals, assists and ratings.
-- European fixtures are manually maintained and should be verified before publication.
-- No paid API key is required.
-- Supabase is optional.
-
-Still manual:
-
-- Updating fixtures, results, standings and news means editing `src/lib/demo-data.ts`.
-- Automatic data sync is intentionally disabled for launch.
