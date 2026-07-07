@@ -42,81 +42,89 @@ export default async function PlayersPage() {
         </div>
       </section>
 
-      <section className="sports-card mt-8 rounded-lg p-5">
-        <div className="flex items-center gap-3">
-          <Shield className="gold-text" size={20} aria-hidden="true" />
-          <h2 className="text-2xl font-black text-white">Top Scorers</h2>
-        </div>
-        <div className="mt-5 grid gap-3 md:grid-cols-2">
-          {topScorers.slice(0, 8).map((player) => (
-            <div
-              className="grid grid-cols-[1fr_auto] gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
-              key={player.id}
-            >
-              <div>
-                <p className="font-black text-white">{player.name}</p>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  {player.teamName}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-black text-[var(--brand)]">
-                  {player.goals}
-                </p>
-                <p className="text-xs font-bold uppercase text-[var(--muted)]">
-                  Goals
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {players.map((player) => (
-          <article className="sports-card animate-lift rounded-lg p-5" key={player.id}>
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <ClubBadge
-                  name={player.team.shortName}
-                  color={player.team.primaryColor}
-                  size="lg"
-                />
+      {topScorers.length > 0 ? (
+        <section className="sports-card mt-8 rounded-lg p-5">
+          <div className="flex items-center gap-3">
+            <Shield className="gold-text" size={20} aria-hidden="true" />
+            <h2 className="text-2xl font-black text-white">Top Scorers</h2>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {topScorers.slice(0, 8).map((player) => (
+              <div
+                className="grid grid-cols-[1fr_auto] gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] p-4"
+                key={player.id}
+              >
                 <div>
-                  <h2 className="text-xl font-black text-white">{player.name}</h2>
-                  <p className="mt-1 text-sm font-bold text-[var(--brand)]">
-                    {player.team.name}
+                  <p className="font-black text-white">{player.name}</p>
+                  <p className="mt-1 text-sm text-[var(--muted)]">
+                    {player.teamName}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-black text-[var(--brand)]">
+                    {player.goals}
+                  </p>
+                  <p className="text-xs font-bold uppercase text-[var(--muted)]">
+                    Goals
                   </p>
                 </div>
               </div>
-              <UserRound className="gold-text" size={22} aria-hidden="true" />
-            </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-            <dl className="mt-6 grid gap-3 text-sm">
-              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
-                <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
-                  <Shield size={15} aria-hidden="true" />
-                  Position
-                </dt>
-                <dd className="font-black text-white">{player.position}</dd>
+      {players.length > 0 ? (
+        <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {players.map((player) => (
+            <article className="sports-card animate-lift rounded-lg p-5" key={player.id}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <ClubBadge
+                    name={player.team.shortName}
+                    color={player.team.primaryColor}
+                    size="lg"
+                  />
+                  <div>
+                    <h2 className="text-xl font-black text-white">{player.name}</h2>
+                    <p className="mt-1 text-sm font-bold text-[var(--brand)]">
+                      {player.team.name}
+                    </p>
+                  </div>
+                </div>
+                <UserRound className="gold-text" size={22} aria-hidden="true" />
               </div>
-              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
-                <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
-                  <Flag size={15} aria-hidden="true" />
-                  Nationality
-                </dt>
-                <dd className="font-black text-white">{player.nationality}</dd>
-              </div>
-              <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
-                <dt className="text-[var(--muted)]">Status</dt>
-                <dd className="font-black text-[var(--brand)]">
-                  {player.dataStatus}
-                </dd>
-              </div>
-            </dl>
-          </article>
-        ))}
-      </section>
+
+              <dl className="mt-6 grid gap-3 text-sm">
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
+                  <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                    <Shield size={15} aria-hidden="true" />
+                    Position
+                  </dt>
+                  <dd className="font-black text-white">{player.position}</dd>
+                </div>
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--line)] bg-[#080b11] px-3 py-3">
+                  <dt className="inline-flex items-center gap-2 text-[var(--muted)]">
+                    <Flag size={15} aria-hidden="true" />
+                    Nationality
+                  </dt>
+                  <dd className="font-black text-white">{player.nationality}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </section>
+      ) : (
+        <section className="sports-card mt-8 rounded-lg p-8 text-center">
+          <p className="text-lg font-black text-white">
+            Live player data unavailable
+          </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            API-Football did not return player or squad records for this league
+            and season.
+          </p>
+        </section>
+      )}
     </div>
   );
 }

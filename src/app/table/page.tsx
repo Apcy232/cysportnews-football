@@ -1,23 +1,15 @@
 import { Trophy } from "lucide-react";
 import Link from "next/link";
 import { ClubBadge } from "@/components/club-badge";
-import { getDefaultSeason, getFootballDataset } from "@/lib/data/cyprus-football";
+import {
+  CYPRUS_FIRST_DIVISION_SEASON,
+  getFootballDataset
+} from "@/lib/data/cyprus-football";
 
 export const dynamic = "force-dynamic";
 
-type TablePageProps = {
-  searchParams?: Promise<{
-    season?: string;
-  }>;
-};
-
-export default async function TablePage({ searchParams }: TablePageProps) {
-  const params = await searchParams;
-  const requestedSeason = Number(params?.season);
-  const season =
-    Number.isInteger(requestedSeason) && requestedSeason > 2000
-      ? requestedSeason
-      : getDefaultSeason();
+export default async function TablePage() {
+  const season = CYPRUS_FIRST_DIVISION_SEASON;
   const { seasons, previousChampions } = await getFootballDataset({ season });
   const selectedSeason =
     seasons.find((item) => item.id === String(season)) ?? seasons[0];
@@ -38,7 +30,7 @@ export default async function TablePage({ searchParams }: TablePageProps) {
             <h1 className="text-4xl font-black text-white">League Table</h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--muted)]">
               Live Cyprus First Division standings from API-Football for League
-              ID 318.
+              ID 318, season 2025.
             </p>
           </div>
           <div className="rounded-lg border border-[var(--line)] bg-[#080b11] px-4 py-3">
@@ -188,6 +180,11 @@ export default async function TablePage({ searchParams }: TablePageProps) {
             </tbody>
           </table>
         </div>
+        {standings.length === 0 ? (
+          <div className="border-t border-[var(--line)] p-6 text-center text-sm font-bold text-[var(--muted)]">
+            Live standings unavailable
+          </div>
+        ) : null}
       </section>
 
       <section className="mt-8">

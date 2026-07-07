@@ -1,5 +1,6 @@
 const API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io";
 const CYPRUS_FIRST_DIVISION_LEAGUE_ID = 318;
+export const CYPRUS_FIRST_DIVISION_SEASON = 2025;
 const CACHE_SECONDS = 60 * 20;
 
 export type FootballTeam = {
@@ -50,7 +51,6 @@ export type FootballPlayer = {
   teamId: string;
   position: string;
   nationality: string;
-  dataStatus: string;
   team: FootballTeam;
 };
 
@@ -285,7 +285,11 @@ export async function getFootballDataset(
       hasApiKey: true
     };
   } catch (error) {
-    console.error("Could not load API-Football data", error);
+    console.error("Could not load API-Football dataset", {
+      league: CYPRUS_FIRST_DIVISION_LEAGUE_ID,
+      season,
+      error
+    });
 
     return emptyDataset(season, true);
   }
@@ -298,11 +302,7 @@ export function getDefaultSeason() {
     return configuredSeason;
   }
 
-  const now = new Date();
-  const month = now.getMonth();
-  const year = now.getFullYear();
-
-  return month >= 7 ? year : year - 1;
+  return CYPRUS_FIRST_DIVISION_SEASON;
 }
 
 export function buildSeasonOptions(selectedSeason = getDefaultSeason()) {
@@ -330,10 +330,27 @@ async function apiFootballFetch<T>(
   });
 
   if (!response.ok) {
+    console.error("API-Football HTTP request failed", {
+      endpoint,
+      params,
+      status: response.status
+    });
+
     throw new Error(`API-Football request failed: ${response.status}`);
   }
 
   const payload = (await response.json()) as ApiResponse<T>;
+  const errors = payload.errors;
+
+  if (hasApiErrors(errors)) {
+    console.error("API-Football returned errors", {
+      endpoint,
+      params,
+      errors
+    });
+
+    throw new Error(`API-Football returned errors for ${endpoint}`);
+  }
 
   return payload.response ?? ([] as T);
 }
@@ -342,7 +359,15 @@ async function getSquadPlayers(teams: FootballTeam[], apiKey: string) {
   const squadResponses = await Promise.all(
     teams.map((team) =>
       apiFootballFetch<ApiSquadResponse[]>("/players/squads", { team: team.id }, apiKey).catch(
-        () => []
+        (error) => {
+          console.error("Could not load API-Football squad", {
+            teamId: team.id,
+            teamName: team.name,
+            error
+          });
+
+          return [];
+        }
       )
     )
   );
@@ -356,8 +381,7 @@ async function getSquadPlayers(teams: FootballTeam[], apiKey: string) {
         name: player.name ?? "Player",
         teamId: team.id,
         position: player.position ?? "Player",
-        nationality: team.city,
-        dataStatus: "API-Football",
+        nationality: "Not listed",
         team
       }));
     })
@@ -377,7 +401,16 @@ async function getEuropeanFixtures(
   const fixtureResponses = await Promise.all(
     europeanTeams.map((team) =>
       apiFootballFetch<ApiFixtureResponse[]>("/fixtures", { team: team.id, season, next: 15 }, apiKey).catch(
-        () => []
+        (error) => {
+          console.error("Could not load API-Football European fixtures", {
+            teamId: team.id,
+            teamName: team.name,
+            season,
+            error
+          });
+
+          return [];
+        }
       )
     )
   );
@@ -526,7 +559,6 @@ function mapLeaguePlayers(
       teamId: team.id,
       position: stats?.games?.position ?? "Player",
       nationality: item.player?.nationality ?? "Not listed",
-      dataStatus: "API-Football",
       team
     };
   });
@@ -663,6 +695,22 @@ function emptyDataset(season: number, hasApiKey: boolean): FootballDataset {
 
 function isFinishedFixture(status?: string) {
   return ["FT", "AET", "PEN"].includes(status ?? "");
+}
+
+function hasApiErrors(errors: unknown) {
+  if (!errors) {
+    return false;
+  }
+
+  if (Array.isArray(errors)) {
+    return errors.length > 0;
+  }
+
+  if (typeof errors === "object") {
+    return Object.keys(errors).length > 0;
+  }
+
+  return Boolean(errors);
 }
 
 function isEuropeanFixture(leagueName?: string) {
