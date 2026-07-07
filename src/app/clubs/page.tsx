@@ -5,7 +5,7 @@ import { getFootballDataset } from "@/lib/data/cyprus-football";
 export const dynamic = "force-dynamic";
 
 export default async function ClubsPage() {
-  const { standings, teams } = await getFootballDataset();
+  const { currentSeason, standings, teams } = await getFootballDataset();
   const cities = new Set(teams.map((team) => team.city)).size;
 
   return (
@@ -16,8 +16,9 @@ export default async function ClubsPage() {
         </p>
         <h1 className="text-4xl font-black text-white">Clubs</h1>
         <p className="max-w-2xl text-base leading-7 text-[var(--muted)]">
-          Demo club profiles for the Cyprus First Division MVP, ready to be
-          replaced by live Supabase data.
+          Current-season Cyprus First Division club profiles for{" "}
+          {currentSeason.label}. Data is manually maintained for now, with
+          promoted and relegated teams reflected as best as possible.
         </p>
       </div>
 
@@ -25,7 +26,7 @@ export default async function ClubsPage() {
         <div className="sports-card rounded-lg p-4">
           <p className="text-2xl font-black text-white">{teams.length}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Featured clubs
+            Current clubs
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
@@ -35,9 +36,9 @@ export default async function ClubsPage() {
           </p>
         </div>
         <div className="sports-card rounded-lg p-4">
-          <p className="text-2xl font-black text-white">MVP</p>
+          <p className="text-2xl font-black text-white">{currentSeason.label}</p>
           <p className="mt-1 text-xs font-bold uppercase text-[var(--muted)]">
-            Manual profiles
+            Manual season
           </p>
         </div>
       </section>

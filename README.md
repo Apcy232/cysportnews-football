@@ -12,10 +12,11 @@ Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
 - Results page
 - League Table page
 - Clubs page
+- Players page
 - News page
 - Mobile-friendly dark sports-media design
-- Local manual data for teams, fixtures, results, standings and news
-- Optional Supabase read support for a future database-backed version
+- Local manual data for teams, fixtures, results, season tables, players and news
+- Season selector with five manually maintained league tables
 - Vercel-ready Next.js build
 
 ## What This Project Uses
@@ -23,7 +24,7 @@ Sportmonks, paid APIs, cron jobs, or Supabase credentials to run.
 - **Next.js** for the website.
 - **TypeScript** to catch mistakes early.
 - **Tailwind CSS** for styling.
-- **Supabase** as an optional future database.
+- **Supabase** as a future database option.
 - **Vercel** for deployment.
 
 No web scraping and no paid football API are used in the MVP.
@@ -33,7 +34,7 @@ No web scraping and no paid football API are used in the MVP.
 - `src/app` contains website pages and global layout.
 - `src/components` contains reusable interface pieces.
 - `src/lib/demo-data.ts` contains the manual MVP data.
-- `src/lib/data/cyprus-football.ts` loads Supabase data only if Supabase env vars exist; otherwise it uses manual data.
+- `src/lib/data/cyprus-football.ts` exposes the manual dataset to the pages.
 - `src/lib/supabase` contains optional Supabase client helpers.
 - `supabase/migrations` contains the optional database blueprint for later.
 - `.env.example` lists optional environment variables.
@@ -71,7 +72,9 @@ That file controls:
 - Teams
 - Fixtures
 - Results
-- League table
+- League tables by season
+- Previous champions
+- Players
 - News
 
 ## Optional Supabase Later
@@ -91,7 +94,8 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Without those values, the website automatically uses local manual data.
+The published MVP does not read from Supabase yet. Those values are only for a
+future database-backed version.
 
 ## Vercel Deployment
 
@@ -117,6 +121,8 @@ Ready to publish:
 
 - Manual-data website works locally and in production builds.
 - Main pages are complete for the MVP.
+- 2025/26 shows Omonia Nicosia as champions in the manual standings.
+- Users can switch between five manual seasons on the League Table page.
 - No paid API key is required.
 - Supabase is optional.
 
